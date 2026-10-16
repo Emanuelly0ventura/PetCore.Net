@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetCore.Api", "PetCore.Api\PetCore.Api.csproj", "{AF4065ED-1445-4F60-8743-66B0F9BDFBF8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetCore.Domain", "PetCore.Domain\PetCore.Domain.csproj", "{5D17AB55-5CBE-447A-8FDC-CF3917E05CDD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetCore.Application", "PetCore.Application\PetCore.Application.csproj", "{FBA05798-213D-4EFF-8197-7E799BA9C183}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetCore.Infrastructure", "PetCore.Infrastructure\PetCore.Infrastructure.csproj", "{2C3ECE32-4456-4BB8-B131-04CC33F48C31}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetCore.Tests.Unit", "PetCore.Tests.Unit\PetCore.Tests.Unit.csproj", "{E36BEE2D-2D52-47B3-91F0-3B8C0D1AF101}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetCore.Tests.Integration", "PetCore.Tests.Integration\PetCore.Tests.Integration.csproj", "{D14EA7D0-0BFC-4745-BDA7-C1D70E51E102}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AF4065ED-1445-4F60-8743-66B0F9BDFBF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF4065ED-1445-4F60-8743-66B0F9BDFBF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF4065ED-1445-4F60-8743-66B0F9BDFBF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF4065ED-1445-4F60-8743-66B0F9BDFBF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D17AB55-5CBE-447A-8FDC-CF3917E05CDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D17AB55-5CBE-447A-8FDC-CF3917E05CDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D17AB55-5CBE-447A-8FDC-CF3917E05CDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D17AB55-5CBE-447A-8FDC-CF3917E05CDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBA05798-213D-4EFF-8197-7E799BA9C183}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBA05798-213D-4EFF-8197-7E799BA9C183}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBA05798-213D-4EFF-8197-7E799BA9C183}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBA05798-213D-4EFF-8197-7E799BA9C183}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C3ECE32-4456-4BB8-B131-04CC33F48C31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C3ECE32-4456-4BB8-B131-04CC33F48C31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C3ECE32-4456-4BB8-B131-04CC33F48C31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C3ECE32-4456-4BB8-B131-04CC33F48C31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E36BEE2D-2D52-47B3-91F0-3B8C0D1AF101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E36BEE2D-2D52-47B3-91F0-3B8C0D1AF101}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E36BEE2D-2D52-47B3-91F0-3B8C0D1AF101}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E36BEE2D-2D52-47B3-91F0-3B8C0D1AF101}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D14EA7D0-0BFC-4745-BDA7-C1D70E51E102}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D14EA7D0-0BFC-4745-BDA7-C1D70E51E102}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D14EA7D0-0BFC-4745-BDA7-C1D70E51E102}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D14EA7D0-0BFC-4745-BDA7-C1D70E51E102}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
