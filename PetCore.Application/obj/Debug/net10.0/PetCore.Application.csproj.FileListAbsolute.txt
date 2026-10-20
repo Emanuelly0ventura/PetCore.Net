@@ -1,0 +1,16 @@
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Application\bin\Debug\net10.0\PetCore.Application.deps.json
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Application\bin\Debug\net10.0\PetCore.Application.dll
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Application\bin\Debug\net10.0\PetCore.Application.pdb
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Application\bin\Debug\net10.0\PetCore.Domain.dll
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Application\bin\Debug\net10.0\PetCore.Domain.pdb
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Application\obj\Debug\net10.0\PetCore.Application.csproj.AssemblyReference.cache
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Application\obj\Debug\net10.0\PetCore.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Application\obj\Debug\net10.0\PetCore.Application.AssemblyInfoInputs.cache
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Application\obj\Debug\net10.0\PetCore.Application.AssemblyInfo.cs
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Application\obj\Debug\net10.0\PetCore.Application.csproj.CoreCompileInputs.cache
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Application\obj\Debug\net10.0\PetCore.Application.sourcelink.json
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Application\obj\Debug\net10.0\PetCore..B1471BA1.Up2Date
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Application\obj\Debug\net10.0\PetCore.Application.dll
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Application\obj\Debug\net10.0\refint\PetCore.Application.dll
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Application\obj\Debug\net10.0\PetCore.Application.pdb
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Application\obj\Debug\net10.0\ref\PetCore.Application.dll

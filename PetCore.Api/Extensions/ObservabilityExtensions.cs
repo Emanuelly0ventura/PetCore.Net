@@ -14,6 +14,7 @@ public static class ObservabilityExtensions
 
         services.AddHealthChecks()
             .AddDbContextCheck<PetCoreContext>("postgresql", tags: ["ready", "database"])
+            .AddCheck<MongoHealthCheck>("mongodb", tags: ["ready", "database", "nosql"])
             .AddCheck<ExternalServiceHealthCheck>("external-service", tags: ["ready", "external"]);
 
         services.AddOpenTelemetry()

@@ -1,0 +1,492 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PetCore.Api</name>
+    </assembly>
+    <members>
+        <member name="M:PetCore.Controllers.ClinicaController.FetchAll">
+            <summary>
+            Lista todos os registros.
+            </summary>
+            <response code="200">Registros retornados com sucesso.</response>
+        </member>
+        <member name="M:PetCore.Controllers.ClinicaController.FetchById(System.Guid)">
+            <summary>
+            Busca um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="200">Registro encontrado.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.ClinicaController.Create(PetCore.Application.DTOs.ClinicaRequest)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="request">Dados para criação de avaliação.</param>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Payload inválido para criação.</response>
+        </member>
+        <member name="M:PetCore.Controllers.ClinicaController.Patch(System.Guid,PetCore.Application.DTOs.ClinicaDadosRequest)">
+            <summary>
+            Atualiza somente a nota da avaliação.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <param name="request">Nova nota da avaliação.</param>
+            <response code="200">Nota atualizada com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.ClinicaController.Delete(System.Guid)">
+            <summary>
+            Exclui um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="204">Registro excluído com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.EnderecoController.FetchAll">
+            <summary>
+            Lista todos os registros.
+            </summary>
+            <response code="200">Registros retornados com sucesso.</response>
+        </member>
+        <member name="M:PetCore.Controllers.EnderecoController.FetchById(System.Guid)">
+            <summary>
+            Busca um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="200">Registro encontrado.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.EnderecoController.Create(PetCore.Application.DTOs.EnderecoRequest)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="request">Dados para criação de avaliação.</param>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Payload inválido para criação.</response>
+        </member>
+        <member name="M:PetCore.Controllers.EnderecoController.Patch(System.Guid,PetCore.Application.DTOs.EnderecoRequest)">
+            <summary>
+            Atualiza somente a nota da avaliação.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <param name="request">Nova nota da avaliação.</param>
+            <response code="200">Nota atualizada com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.EnderecoController.Delete(System.Guid)">
+            <summary>
+            Exclui um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="204">Registro excluído com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.ExameController.FetchAll">
+            <summary>
+            Lista todos os registros.
+            </summary>
+            <response code="200">Registros retornados com sucesso.</response>
+        </member>
+        <member name="M:PetCore.Controllers.ExameController.FetchById(System.Guid)">
+            <summary>
+            Busca um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="200">Registro encontrado.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.ExameController.Create(PetCore.Application.DTOs.ExameRequest)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="request">Dados para criação de avaliação.</param>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Payload inválido para criação.</response>
+        </member>
+        <member name="M:PetCore.Controllers.ExameController.Patch(System.Guid,PetCore.Application.DTOs.ExameDadosRequest)">
+            <summary>
+            Atualiza somente a nota da avaliação.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <param name="request">Nova nota da avaliação.</param>
+            <response code="200">Nota atualizada com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.ExameController.Delete(System.Guid)">
+            <summary>
+            Exclui um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="204">Registro excluído com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.HistoricoController.FetchAll">
+            <summary>
+            Lista todos os registros.
+            </summary>
+            <response code="200">Registros retornados com sucesso.</response>
+        </member>
+        <member name="M:PetCore.Controllers.HistoricoController.FetchById(System.Guid)">
+            <summary>
+            Busca um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="200">Registro encontrado.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.HistoricoController.Create(PetCore.Application.DTOs.HistoricoRequest)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="request">Dados para criação de avaliação.</param>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Payload inválido para criação.</response>
+        </member>
+        <member name="M:PetCore.Controllers.HistoricoController.Delete(System.Guid)">
+            <summary>
+            Exclui um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="204">Registro excluído com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.MedicamentoController.FetchAll">
+            <summary>
+            Lista todos os registros.
+            </summary>
+            <response code="200">Registros retornados com sucesso.</response>
+        </member>
+        <member name="M:PetCore.Controllers.MedicamentoController.FetchById(System.Guid)">
+            <summary>
+            Busca um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="200">Registro encontrado.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.MedicamentoController.Create(PetCore.Application.DTOs.MedicamentoRequest)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="request">Dados para criação de avaliação.</param>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Payload inválido para criação.</response>
+        </member>
+        <member name="M:PetCore.Controllers.MedicamentoController.Patch(System.Guid,PetCore.Application.DTOs.MedicamentoDadosRequest)">
+            <summary>
+            Atualiza somente a nota da avaliação.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <param name="request">Nova nota da avaliação.</param>
+            <response code="200">Nota atualizada com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.MedicamentoController.Delete(System.Guid)">
+            <summary>
+            Exclui um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="204">Registro excluído com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.MedicoController.FetchAll">
+            <summary>
+            Lista todos os registros.
+            </summary>
+            <response code="200">Registros retornados com sucesso.</response>
+        </member>
+        <member name="M:PetCore.Controllers.MedicoController.FetchById(System.Guid)">
+            <summary>
+            Busca um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="200">Registro encontrado.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.MedicoController.Create(PetCore.Application.DTOs.MedicoRequest)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="request">Dados para criação de avaliação.</param>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Payload inválido para criação.</response>
+        </member>
+        <member name="M:PetCore.Controllers.MedicoController.Patch(System.Guid,PetCore.Application.DTOs.UserDadosRequest)">
+            <summary>
+            Atualiza somente a nota da avaliação.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <param name="request">Nova nota da avaliação.</param>
+            <response code="200">Nota atualizada com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.MedicoController.Delete(System.Guid)">
+            <summary>
+            Exclui um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="204">Registro excluído com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.MedicoController.FetchByEmail(System.String,System.String)">
+            <summary>
+            Busca um tutor por email e senha.
+            </summary>
+            <param name="email">Email do tutor.</param>
+            <param name="senha">Senha do tutor.</param>
+            <response code="200">Tutor encontrado com sucesso.</response>
+            <response code="404">Nenhum tutor encontrado com as credenciais informadas.</response>
+        </member>
+        <member name="M:PetCore.Controllers.PetController.FetchAll">
+            <summary>
+            Lista todos os registros.
+            </summary>
+            <response code="200">Registros retornados com sucesso.</response>
+        </member>
+        <member name="M:PetCore.Controllers.PetController.FetchMenuAll">
+            <summary>
+            Lista todos os registros.
+            </summary>
+            <response code="200">Registros retornados com sucesso.</response>
+        </member>
+        <member name="M:PetCore.Controllers.PetController.FetchById(System.Guid)">
+            <summary>
+            Busca um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="200">Registro encontrado.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.PetController.Create(PetCore.Application.DTOs.PetRequest)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="request">Dados para criação de avaliação.</param>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Payload inválido para criação.</response>
+        </member>
+        <member name="M:PetCore.Controllers.PetController.Patch(System.Guid,PetCore.Application.DTOs.PetDadosRequest)">
+            <summary>
+            Atualiza somente a nota da avaliação.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <param name="request">Nova nota da avaliação.</param>
+            <response code="200">Nota atualizada com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.PetController.Delete(System.Guid)">
+            <summary>
+            Exclui um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="204">Registro excluído com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.ProntuarioController.FetchAll">
+            <summary>
+            Lista todos os registros.
+            </summary>
+            <response code="200">Registros retornados com sucesso.</response>
+        </member>
+        <member name="M:PetCore.Controllers.ProntuarioController.FetchById(System.Guid)">
+            <summary>
+            Busca um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="200">Registro encontrado.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.ProntuarioController.Create(PetCore.Application.DTOs.ProntuarioRequest)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="request">Dados para criação de avaliação.</param>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Payload inválido para criação.</response>
+        </member>
+        <member name="M:PetCore.Controllers.ProntuarioController.Patch(System.Guid,PetCore.Application.DTOs.ProntuarioDadosRequest)">
+            <summary>
+            Atualiza somente a nota da avaliação.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <param name="request">Nova nota da avaliação.</param>
+            <response code="200">Nota atualizada com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.ProntuarioController.Delete(System.Guid)">
+            <summary>
+            Exclui um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="204">Registro excluído com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.ReceitaController.FetchAll">
+            <summary>
+            Lista todos os registros.
+            </summary>
+            <response code="200">Registros retornados com sucesso.</response>
+        </member>
+        <member name="M:PetCore.Controllers.ReceitaController.FetchById(System.Guid)">
+            <summary>
+            Busca um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="200">Registro encontrado.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.ReceitaController.Create(PetCore.Application.DTOs.ReceitaRequest)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="request">Dados para criação de avaliação.</param>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Payload inválido para criação.</response>
+        </member>
+        <member name="M:PetCore.Controllers.ReceitaController.Delete(System.Guid)">
+            <summary>
+            Exclui um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="204">Registro excluído com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.RelatorioController.FetchAll">
+            <summary>
+            Lista todos os registros.
+            </summary>
+            <response code="200">Registros retornados com sucesso.</response>
+        </member>
+        <member name="M:PetCore.Controllers.RelatorioController.FetchById(System.Guid)">
+            <summary>
+            Busca um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="200">Registro encontrado.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.RelatorioController.Create(PetCore.Application.DTOs.RelatorioRequest)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="request">Dados para criação de avaliação.</param>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Payload inválido para criação.</response>
+        </member>
+        <member name="M:PetCore.Controllers.RelatorioController.Patch(System.Guid,PetCore.Application.DTOs.RelatorioDadosRequest)">
+            <summary>
+            Atualiza somente a nota da avaliação.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <param name="request">Nova nota da avaliação.</param>
+            <response code="200">Nota atualizada com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.RelatorioController.Delete(System.Guid)">
+            <summary>
+            Exclui um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="204">Registro excluído com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.TutorController.FetchAll">
+            <summary>
+            Lista todos os registros.
+            </summary>
+            <response code="200">Registros retornados com sucesso.</response>
+        </member>
+        <member name="M:PetCore.Controllers.TutorController.FetchById(System.Guid)">
+            <summary>
+            Busca um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="200">Registro encontrado.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.TutorController.Create(PetCore.Application.DTOs.TutorRequest)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="request">Dados para criação de avaliação.</param>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Payload inválido para criação.</response>
+        </member>
+        <member name="M:PetCore.Controllers.TutorController.Patch(System.Guid,PetCore.Application.DTOs.UserDadosRequest)">
+            <summary>
+            Atualiza somente a nota da avaliação.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <param name="request">Nova nota da avaliação.</param>
+            <response code="200">Nota atualizada com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.TutorController.Delete(System.Guid)">
+            <summary>
+            Exclui um registro por Id.
+            </summary>
+            <param name="id">Identificador único da avaliação.</param>
+            <response code="204">Registro excluído com sucesso.</response>
+            <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+        </member>
+        <member name="M:PetCore.Controllers.TutorController.FetchByEmail(System.String,System.String)">
+            <summary>
+            Busca um tutor por email e senha.
+            </summary>
+            <param name="email">Email do tutor.</param>
+            <param name="senha">Senha do tutor.</param>
+            <response code="200">Tutor encontrado com sucesso.</response>
+            <response code="404">Nenhum tutor encontrado com as credenciais informadas.</response>
+        </member>
+        <member name="T:Program">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Type)">
+            <summary>
+            Generates a documentation comment ID for a type.
+            Example: T:Namespace.Outer+Inner`1 becomes T:Namespace.Outer.Inner`1
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Reflection.PropertyInfo)">
+            <summary>
+            Generates a documentation comment ID for a property.
+            Example: P:Namespace.ContainingType.PropertyName or for an indexer P:Namespace.ContainingType.Item(System.Int32)
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Type,System.String)">
+            <summary>
+            Generates a documentation comment ID for a property given its container type and property name.
+            Example: P:Namespace.ContainingType.PropertyName
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Reflection.MethodInfo)">
+            <summary>
+            Generates a documentation comment ID for a method (or constructor).
+            For example:
+              M:Namespace.ContainingType.MethodName(ParamType1,ParamType2)~ReturnType
+              M:Namespace.ContainingType.#ctor(ParamType)
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.GetTypeDocId(System.Type,System.Boolean,System.Boolean)">
+            <summary>
+            Generates a documentation ID string for a type.
+            This method handles nested types (replacing '+' with '.'),
+            generic types, arrays, pointers, by-ref types, and generic parameters.
+            The <paramref name="includeGenericArguments"/> flag controls whether
+            constructed generic type arguments are emitted, while <paramref name="omitGenericArity"/>
+            controls whether the generic arity marker (e.g. "`1") is appended.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.NormalizeDocId(System.String)">
+            <summary>
+            Normalizes a documentation comment ID to match the compiler-style format.
+            Strips the return type suffix for ordinary methods but retains it for conversion operators.
+            </summary>
+            <param name="docId">The documentation comment ID to normalize.</param>
+            <returns>The normalized documentation comment ID.</returns>
+        </member>
+    </members>
+</doc>

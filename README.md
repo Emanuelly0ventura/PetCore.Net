@@ -18,7 +18,7 @@ RM564555 - 2TDSPJ
 
 O **PetCore** é uma API REST desenvolvida em C# com ASP.NET Core para gerenciamento de informações veterinárias de pets, tutores, médicos, clínicas, prontuários, receitas, exames, medicamentos, históricos e relatórios.
 
-O projeto foi organizado em camadas, separando responsabilidades entre API, Application, Domain e Infrastructure. A persistência dos dados é feita com Entity Framework Core e MySQL, utilizando migrations para criação e versionamento da estrutura do banco de dados.
+O projeto foi organizado em camadas, separando responsabilidades entre API, Application, Domain e Infrastructure. A persistência relacional é feita com Entity Framework Core e PostgreSQL; o recurso de históricos clínicos usa MongoDB por meio de um repositório dedicado.
 
 ## Solução Proposta
 
@@ -57,8 +57,10 @@ O sistema contempla relacionamentos entre entidades, como:
 - C#
 - ASP.NET Core
 - Entity Framework Core
-- MySQL
-- Pomelo.EntityFrameworkCore.MySql
+- PostgreSQL
+- MongoDB
+- Npgsql.EntityFrameworkCore.PostgreSQL
+- MongoDB.Driver
 - Swagger / Swashbuckle
 - Arquitetura em camadas
 - Fluent API para mapeamento das entidades
@@ -71,9 +73,9 @@ O sistema contempla relacionamentos entre entidades, como:
 ### Health checks
 
 - `GET /health/live`: confirma que a API está em execução, sem dependências externas.
-- `GET /health/ready`: valida a conectividade do `PetCoreContext` com o banco MySQL e o serviço externo configurado.
+- `GET /health/ready`: valida a conectividade do PostgreSQL, MongoDB e do serviço externo configurado.
 
-O projeto atualmente utiliza **MySQL**, portanto o health check de dados acompanha a tecnologia existente; não foram introduzidos Oracle ou MongoDB. Para verificar um serviço externo, informe a URL no campo `ExternalServices:BaseUrl` de `PetCore.Api/appsettings.json`.
+Os recursos gerais continuam no **PostgreSQL** via EF Core. O recurso `Historico` usa a coleção MongoDB `historicos`. Para verificar um serviço externo, informe a URL no campo `ExternalServices:BaseUrl` de `PetCore.Api/appsettings.json`.
 
 ### Logs, correlação e rastreabilidade
 
@@ -337,7 +339,8 @@ Siga os passos abaixo para configurar e executar a API PetCore localmente.
 Antes de iniciar, verifique se você possui instalado:
 
 - .NET SDK
-- MySQL Server
+- PostgreSQL Server
+- MongoDB ou Docker Desktop
 - Visual Studio, Rider ou VS Code
 - Ferramenta do Entity Framework Core
 
@@ -366,7 +369,7 @@ dotnet restore
 
 ---
 
-### 4. Configurar o Banco de Dados
+### 4. Configurar os Bancos de Dados
 
 No arquivo:
 
@@ -374,24 +377,24 @@ No arquivo:
 PetCore.Api/appsettings.json
 ```
 
-configure a connection string do MySQL.
+configure as conexões PostgreSQL e MongoDB. Use variáveis de ambiente em ambientes compartilhados ou de deploy.
 
-#### Exemplo com senha:
+#### PostgreSQL:
 
 ```json
 {
   "ConnectionStrings": {
-    "PetCoreMySql": "server=127.0.0.1;port=3306;database=petcore;user=root;password=sua_senha"
+    "DefaultConnection": "Host=localhost;Port=5432;Database=petcore;Username=postgres;Password=sua_senha"
   }
 }
 ```
 
-#### Exemplo sem senha:
+#### MongoDB local (Docker Desktop):
 
 ```json
 {
   "ConnectionStrings": {
-    "PetCoreMySql": "server=127.0.0.1;port=3306;database=petcore;user=root;password="
+    "MongoDb": "mongodb://localhost:27017"
   }
 }
 ```
@@ -400,7 +403,7 @@ configure a connection string do MySQL.
 
 ### 5. Aplicar as Migrations
 
-Com o MySQL em execução, aplique as migrations para criar as tabelas do banco de dados:
+Com o PostgreSQL em execução, aplique as migrations para criar as tabelas do banco de dados:
 
 ```bash
 dotnet ef database update --project PetCore.Infrastructure --startup-project PetCore.Api --context PetCoreContext
@@ -414,7 +417,15 @@ Caso não seja possível conectar ao banco no momento, o projeto possui um scrip
 petcore-migration.sql
 ```
 
-Esse script pode ser executado manualmente no MySQL.
+Esse script pode ser executado manualmente no PostgreSQL.
+
+Para iniciar somente o MongoDB local com o Docker Desktop, execute:
+
+```bash
+docker run -d --name petcore-mongodb -p 27017:27017 -v petcore-mongo-data:/data/db mongo:8
+```
+
+O MongoDB cria o banco `petcore` e a coleção `historicos` na primeira gravação. A API conecta usando `ConnectionStrings:MongoDb` e permite substituir a URI com `ConnectionStrings__MongoDb`.
 
 ---
 

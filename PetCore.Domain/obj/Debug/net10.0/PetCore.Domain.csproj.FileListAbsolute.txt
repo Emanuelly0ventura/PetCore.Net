@@ -1,0 +1,12 @@
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Domain\bin\Debug\net10.0\PetCore.Domain.deps.json
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Domain\bin\Debug\net10.0\PetCore.Domain.dll
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Domain\bin\Debug\net10.0\PetCore.Domain.pdb
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Domain\obj\Debug\net10.0\PetCore.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Domain\obj\Debug\net10.0\PetCore.Domain.AssemblyInfoInputs.cache
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Domain\obj\Debug\net10.0\PetCore.Domain.AssemblyInfo.cs
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Domain\obj\Debug\net10.0\PetCore.Domain.csproj.CoreCompileInputs.cache
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Domain\obj\Debug\net10.0\PetCore.Domain.sourcelink.json
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Domain\obj\Debug\net10.0\PetCore.Domain.dll
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Domain\obj\Debug\net10.0\refint\PetCore.Domain.dll
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Domain\obj\Debug\net10.0\PetCore.Domain.pdb
+C:\Manu\fiap\fiap\Challege\Challenge_2ano\sprint4\C#\PetCore.Net\PetCore.Domain\obj\Debug\net10.0\ref\PetCore.Domain.dll

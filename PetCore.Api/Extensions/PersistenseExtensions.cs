@@ -4,6 +4,8 @@ using PetCore.Application.Services.Implementations;
 using PetCore.Application.Services.Interfaces;
 using PetCore.Infrastructure.Persistence;
 using PetCore.Infrastructure.Repositories;
+using MongoDB.Driver;
+using PetCore.Infrastructure.Persistence.Mongo;
 
 namespace PetCore.Extensions;
 
@@ -35,7 +37,7 @@ public static class PersistenceExtensions
         services.AddScoped<IClinicaRepository, ClinicaRepository>();
         services.AddScoped<IEnderecoRepository, EnderecoRepository>();
         services.AddScoped<IExameRepository, ExameRepository>();
-        services.AddScoped<IHistoricoRepository, HistoricoRepository>();
+        services.AddScoped<IHistoricoRepository, MongoHistoricoRepository>();
         services.AddScoped<IMedicamentoRepository, MedicamentoRepository>();
         services.AddScoped<IMedicoRepository, MedicoRepository>();
         services.AddScoped<IPetRepository, PetRepository>();
@@ -51,6 +53,17 @@ public static class PersistenceExtensions
 
     public static IServiceCollection AddDBContext(this IServiceCollection services, IConfiguration configuration)
     {
+        var mongoConnection = configuration.GetConnectionString("MongoDb")
+            ?? configuration["MongoDb:ConnectionString"];
+        if (string.IsNullOrWhiteSpace(mongoConnection))
+            throw new InvalidOperationException("A conexão MongoDB não foi configurada. Defina ConnectionStrings__MongoDb.");
+
+        services.AddSingleton<IMongoClient>(_ => new MongoClient(mongoConnection));
+        services.AddSingleton(provider => provider.GetRequiredService<IMongoClient>()
+            .GetDatabase(configuration["MongoDb:Database"] ?? "petcore"));
+        services.AddSingleton(provider => provider.GetRequiredService<IMongoDatabase>()
+            .GetCollection<HistoricoDocument>(configuration["MongoDb:HistoricosCollection"] ?? "historicos"));
+
         services.AddDbContext<PetCoreContext>(options =>
         {
   
@@ -58,13 +71,8 @@ public static class PersistenceExtensions
 
             if (string.IsNullOrWhiteSpace(connectionString))
             {
-                connectionString = configuration.GetConnectionString("PetCoreMySql");
-            }
-
-            if (string.IsNullOrWhiteSpace(connectionString))
-            {
                 throw new InvalidOperationException(
-                    "A conexão com o banco não foi configurada. Defina ConnectionStrings__DefaultConnection.");
+                    "A conexão PostgreSQL não foi configurada. Defina ConnectionStrings__DefaultConnection.");
             }
             options.UseNpgsql(connectionString);
         });

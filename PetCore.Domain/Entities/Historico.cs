@@ -33,5 +33,19 @@ public class Historico
 
         Status = true;
     }
+
+    /// <summary>Reconstitui um histórico persistido sem gerar um novo identificador.</summary>
+    public static Historico Restore(Guid id, DateOnly data, bool status, Guid idPet)
+    {
+        if (id == Guid.Empty)
+            throw new ArgumentException("Id do histórico está vazio", nameof(id));
+
+        var historico = new Historico(data, idPet)
+        {
+            Id = id,
+            Status = status
+        };
+        return historico;
+    }
     
 }

@@ -29,12 +29,13 @@ public sealed class PetCoreApiFactory : WebApplicationFactory<Program>
 
             services.PostConfigure<HealthCheckServiceOptions>(options =>
             {
-                var databaseCheck = options.Registrations
-                    .FirstOrDefault(registration => registration.Name == "mysql");
-
-                if (databaseCheck is not null)
+                foreach (var checkName in new[] { "mysql", "postgresql", "mongodb" })
                 {
-                    options.Registrations.Remove(databaseCheck);
+                    var databaseCheck = options.Registrations
+                        .FirstOrDefault(registration => registration.Name == checkName);
+
+                    if (databaseCheck is not null)
+                        options.Registrations.Remove(databaseCheck);
                 }
             });
 
