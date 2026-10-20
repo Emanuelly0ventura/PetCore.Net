@@ -39,6 +39,9 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.Property(x => x.Status)
             .IsRequired();
 
+        builder.Property(x => x.ObitoInformado).IsRequired();
+        builder.Property(x => x.ComedouroStatus).HasMaxLength(20).IsRequired();
+
         builder.Property(x => x.UrlImg);
         
         // RELACIONAMENTOS

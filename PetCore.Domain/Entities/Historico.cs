@@ -9,6 +9,12 @@ public class Historico
     public bool Status { get; private set; }
 
     public Guid? IdPet { get; private set; }
+    public Guid? TutorId { get; private set; }
+    public string TutorNome { get; private set; } = string.Empty;
+    public string PetNome { get; private set; } = string.Empty;
+    public string TipoRegistro { get; private set; } = "historico";
+    public string StatusMobile { get; private set; } = "Ativo";
+    public DateTime? DataSolicitacao { get; private set; }
     
     //RELACIONAMENTOS
     public List<Relatorio> Relatorios { get; private set; }
@@ -32,6 +38,16 @@ public class Historico
         IdPet = idPet;
 
         Status = true;
+    }
+
+    public void SetMobileData(Guid? tutorId, string? tutorNome, string? petNome, string? tipoRegistro, string? status, DateTime? dataSolicitacao)
+    {
+        TutorId = tutorId;
+        TutorNome = tutorNome?.Trim() ?? string.Empty;
+        PetNome = petNome?.Trim() ?? string.Empty;
+        TipoRegistro = string.IsNullOrWhiteSpace(tipoRegistro) ? "historico" : tipoRegistro.Trim();
+        StatusMobile = string.IsNullOrWhiteSpace(status) ? "Solicitado" : status.Trim();
+        DataSolicitacao = dataSolicitacao;
     }
 
     /// <summary>Reconstitui um histórico persistido sem gerar um novo identificador.</summary>

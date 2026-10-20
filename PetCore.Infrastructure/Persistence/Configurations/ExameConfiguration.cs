@@ -20,8 +20,7 @@ public class ExameConfiguration : IEntityTypeConfiguration<Exame>
         builder.Property(x => x.IdMedico)
             .IsRequired();
         
-        builder.Property(x => x.IdProntuario)
-            .IsRequired();
+        builder.Property(x => x.IdProntuario).IsRequired(false);
         
         // RELACIONAMENTOS
         //N:1 Prontuario

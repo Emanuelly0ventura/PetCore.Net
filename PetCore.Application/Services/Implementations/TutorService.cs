@@ -36,6 +36,16 @@ public class TutorService(ITutorRepository tutorRepository) : ITutorService
 
         if (tut is null)
             return null;
+
+        if (!string.IsNullOrWhiteSpace(userRequest.Nome)) { tut.Nome = userRequest.Nome.Trim(); changed = true; }
+        var nascimento = userRequest.ParseNascimento();
+        if (nascimento.HasValue)
+        {
+            if (nascimento.Value > DateOnly.FromDateTime(DateTime.Now.AddYears(-18))) throw new ArgumentException("Tutor deve ser maior de 18 anos.");
+            tut.DataNascimento = nascimento.Value; changed = true;
+        }
+        var genero = userRequest.ParseGenero();
+        if (genero.HasValue) { tut.Sexo = genero.Value; changed = true; }
         
         if (!string.IsNullOrWhiteSpace(userRequest.Email))
         {

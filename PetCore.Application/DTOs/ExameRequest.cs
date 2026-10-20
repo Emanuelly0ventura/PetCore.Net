@@ -1,27 +1,39 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using PetCore.Domain.Entities;
 
 namespace PetCore.Application.DTOs;
 
 public class ExameRequest
 {
-    [Required(ErrorMessage = "O campo 'Nome' deve ser preenchido")]
-    [StringLength(150, MinimumLength = 2, ErrorMessage = "Nome deve ter entre 2 à 150 caracteres")]
-    public string Nome { get;  set; }
-    
-    [Required(ErrorMessage = "O campo 'Data' deve ser preenchido")]
-    public DateOnly Data { get;  set; }
-    
-    [Required(ErrorMessage = "O campo 'Tipo' deve ser preenchido")]
-    [StringLength(150, MinimumLength = 2, ErrorMessage = "Tipo deve ter entre 2 à 150 caracteres")]
-    public string Tipo{ get;  set; }
+    public string? Nome { get; set; }
+    public DateOnly Data { get; set; }
+    public string? Tipo { get; set; }
+    [JsonPropertyName("tipoExame")] public string? TipoExame { get; set; }
+    [Required] public Guid IdMedico { get; set; }
+    [JsonPropertyName("veterinarioId")] public Guid? VeterinarioId { get => null; set { if (value.HasValue) IdMedico = value.Value; } }
+    public Guid? IdProntuario { get; set; }
+    public Guid? PetId { get; set; }
+    public string? PetNome { get; set; }
+    public Guid? TutorId { get; set; }
+    public string? TutorNome { get; set; }
+    public string? VeterinarioNome { get; set; }
+    public string? ArquivoSolicitacao { get; set; }
+    public string? DataEnvio { get; set; }
 
-    [Required(ErrorMessage = "O campo 'IdMedico' deve ser preenchido")]
-    public Guid IdMedico { get; set; }
-    
-    [Required(ErrorMessage = "O campo 'IdProntuario' deve ser preenchido")]
-    public Guid IdProntuario { get; set; }
-
-    public Exame ToDomain() =>
-        new(Nome, Data, Tipo, IdMedico, IdProntuario);
+    public Exame ToDomain()
+    {
+        DateTime? sentAt = null;
+        if (!string.IsNullOrWhiteSpace(DataEnvio) && DateTime.TryParse(DataEnvio, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal, out var parsed))
+        {
+            sentAt = parsed.ToUniversalTime();
+            if (Data == default) Data = DateOnly.FromDateTime(parsed);
+        }
+        if (Data == default) Data = DateOnly.FromDateTime(DateTime.UtcNow);
+        var tipo = TipoExame ?? Tipo;
+        if (string.IsNullOrWhiteSpace(tipo)) throw new ValidationException("tipoExame é obrigatório.");
+        var nome = string.IsNullOrWhiteSpace(Nome) ? tipo : Nome;
+        return new Exame(nome, Data, tipo, IdMedico, IdProntuario, PetId, TutorId, PetNome, TutorNome,
+            VeterinarioNome, ArquivoSolicitacao, sentAt);
+    }
 }

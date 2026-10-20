@@ -15,7 +15,7 @@ public class ReceitaConfiguration : IEntityTypeConfiguration<Receita>
 
         // Atributos
         builder.Property(x => x.IdProntuario)
-            .IsRequired();
+            .IsRequired(false);
         
         builder.Property(x => x.IdMedicoResponsavel)
             .IsRequired();

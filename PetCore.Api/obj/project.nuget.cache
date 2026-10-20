@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "CY3ty1eIoHA=",
+  "dgSpecHash": "cdJk7LEhIbA=",
   "success": true,
   "projectFilePath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Api\\PetCore.Api.csproj",
   "expectedPackageFiles": [
@@ -66,7 +66,7 @@
     {
       "code": "NU1903",
       "level": "Warning",
-      "message": "O pacote 'Microsoft.OpenApi' 2.4.1 tem uma alta vulnerabilidade de gravidade conhecida, https://github.com/advisories/GHSA-v5pm-xwqc-g5wc",
+      "message": "Package 'Microsoft.OpenApi' 2.4.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-v5pm-xwqc-g5wc",
       "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Api\\PetCore.Api.csproj",
       "warningLevel": 1,
       "filePath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Api\\PetCore.Api.csproj",
@@ -78,7 +78,7 @@
     {
       "code": "NU1902",
       "level": "Warning",
-      "message": "O pacote 'OpenTelemetry.Api' 1.14.0 tem uma moderado vulnerabilidade de gravidade conhecida, https://github.com/advisories/GHSA-g94r-2vxg-569j",
+      "message": "Package 'OpenTelemetry.Api' 1.14.0 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-g94r-2vxg-569j",
       "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Api\\PetCore.Api.csproj",
       "warningLevel": 1,
       "filePath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Api\\PetCore.Api.csproj",
@@ -90,7 +90,7 @@
     {
       "code": "NU1902",
       "level": "Warning",
-      "message": "O pacote 'SharpCompress' 0.30.1 tem uma moderado vulnerabilidade de gravidade conhecida, https://github.com/advisories/GHSA-6c8g-7p36-r338",
+      "message": "Package 'SharpCompress' 0.30.1 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-6c8g-7p36-r338",
       "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Api\\PetCore.Api.csproj",
       "warningLevel": 1,
       "filePath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Api\\PetCore.Api.csproj",
@@ -102,7 +102,7 @@
     {
       "code": "NU1903",
       "level": "Warning",
-      "message": "O pacote 'Snappier' 1.0.0 tem uma alta vulnerabilidade de gravidade conhecida, https://github.com/advisories/GHSA-pggp-6c3x-2xmx",
+      "message": "Package 'Snappier' 1.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-pggp-6c3x-2xmx",
       "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Api\\PetCore.Api.csproj",
       "warningLevel": 1,
       "filePath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Api\\PetCore.Api.csproj",

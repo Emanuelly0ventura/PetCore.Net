@@ -238,7 +238,7 @@
             <response code="200">Tutor encontrado com sucesso.</response>
             <response code="404">Nenhum tutor encontrado com as credenciais informadas.</response>
         </member>
-        <member name="M:PetCore.Controllers.PetController.FetchAll">
+        <member name="M:PetCore.Controllers.PetController.FetchAll(System.Nullable{System.Guid})">
             <summary>
             Lista todos os registros.
             </summary>

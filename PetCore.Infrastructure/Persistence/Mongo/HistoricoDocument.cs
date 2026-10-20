@@ -13,4 +13,10 @@ public sealed class HistoricoDocument
     public bool Status { get; set; }
 
     public Guid? IdPet { get; set; }
+    public Guid? TutorId { get; set; }
+    public string TutorNome { get; set; } = string.Empty;
+    public string PetNome { get; set; } = string.Empty;
+    public string TipoRegistro { get; set; } = "historico";
+    public string StatusMobile { get; set; } = "Ativo";
+    public DateTime? DataSolicitacao { get; set; }
 }

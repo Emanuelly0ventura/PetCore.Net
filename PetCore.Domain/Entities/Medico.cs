@@ -6,6 +6,11 @@ namespace PetCore.Domain.Entities;
 public class Medico : UsuarioBase
 {
     public string Especialidade { get; private set; }
+    public string? Clinica { get; private set; }
+    public string? NomeClinica { get; private set; }
+    public string? CnpjClinica { get; private set; }
+    public string? CepClinica { get; private set; }
+    public string? ComplementoClinica { get; private set; }
     
     //RELACIONAMENTO
     public List<Relatorio> Relatorios { get; private set; }
@@ -48,6 +53,21 @@ public class Medico : UsuarioBase
         UpdateTelefone(telefone);
         UpdateSenha(senha);
         UpdateUrlImg(url);
+    }
+
+    public void UpdateEspecialidade(string especialidade)
+    {
+        if (string.IsNullOrWhiteSpace(especialidade)) throw new ArgumentException("Especialização é obrigatória.", nameof(especialidade));
+        Especialidade = especialidade.Trim();
+    }
+
+    public void UpdateDadosClinica(string? clinica, string? nomeClinica, string? cnpj, string? cep, string? complemento)
+    {
+        Clinica = string.IsNullOrWhiteSpace(clinica) ? null : clinica.Trim();
+        NomeClinica = string.IsNullOrWhiteSpace(nomeClinica) ? null : nomeClinica.Trim();
+        CnpjClinica = string.IsNullOrWhiteSpace(cnpj) ? null : cnpj.Trim();
+        CepClinica = string.IsNullOrWhiteSpace(cep) ? null : cep.Trim();
+        ComplementoClinica = string.IsNullOrWhiteSpace(complemento) ? null : complemento.Trim();
     }
     
     public void UpdateEmail(string email)

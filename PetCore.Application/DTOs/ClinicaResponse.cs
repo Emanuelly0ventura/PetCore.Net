@@ -8,6 +8,8 @@ public class ClinicaResponse
     public string Nome { get;  set; }
     public string Cnpj { get;  set; } 
     public Guid IdEndereco { get;  set; }
+    public string? Cep { get; set; }
+    public string? Complemento { get; set; }
 
     public ClinicaResponse(Clinica clinica)
     {
@@ -15,5 +17,7 @@ public class ClinicaResponse
         Nome = clinica.Nome;
         Cnpj = clinica.Cnpj;
         IdEndereco = clinica.IdEndereco;
+        Cep = clinica.Endereco?.Cep;
+        Complemento = clinica.Endereco?.Complemento;
     }
 }

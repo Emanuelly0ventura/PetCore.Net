@@ -15,9 +15,9 @@ public class PetController(IPetService petService) : ControllerBase
     /// <response code="200">Registros retornados com sucesso.</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult FetchAll()
+    public IActionResult FetchAll([FromQuery] Guid? tutorId = null)
     {
-        return Ok(petService.FetchAll());
+        return Ok(petService.FetchAll(tutorId));
     }
     
     /// <summary>
@@ -28,7 +28,7 @@ public class PetController(IPetService petService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult FetchMenuAll()
     {
-        return Ok(petService.FetchAll());
+        return Ok(petService.FetchMenuAll());
     }
 
     /// <summary>

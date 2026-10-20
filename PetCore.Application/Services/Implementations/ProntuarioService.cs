@@ -48,6 +48,18 @@ public class ProntuarioService(IProntuarioRepository prontuarioRepository,
 
         if (pront is null)
             return null;
+
+        var mobileDate = prontuarioRequest.ParseDataConsulta();
+        var mobileTemperature = prontuarioRequest.ParseMedida(prontuarioRequest.Temperatura, "temperatura");
+        var mobileWeight = prontuarioRequest.ParseMedida(prontuarioRequest.Peso, "peso");
+        var mobileDescription = prontuarioRequest.Observacoes ?? prontuarioRequest.Descricao;
+        if (mobileDate.HasValue || mobileDescription is not null || prontuarioRequest.Temperatura is not null || prontuarioRequest.Peso is not null ||
+            prontuarioRequest.Tratamento is not null || prontuarioRequest.PetId.HasValue || prontuarioRequest.PetNome is not null || prontuarioRequest.TutorId.HasValue || prontuarioRequest.TutorNome is not null)
+        {
+            pront.UpdateMobileData(mobileDate, mobileDescription, mobileTemperature, mobileWeight, prontuarioRequest.Tratamento,
+                prontuarioRequest.PetId, prontuarioRequest.PetNome, prontuarioRequest.TutorId, prontuarioRequest.TutorNome);
+            changed = true;
+        }
         
         if (!string.IsNullOrWhiteSpace(prontuarioRequest.Descricao))
         {

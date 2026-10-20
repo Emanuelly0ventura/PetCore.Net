@@ -21,11 +21,8 @@ public class ProntuarioConfiguration : IEntityTypeConfiguration<Prontuario>
         builder.Property(x => x.Descricao)
             .IsRequired();
         
-        builder.Property(x => x.IdMedico)
-            .IsRequired();
-        
-        builder.Property(x => x.IdHistorico)
-            .IsRequired();
+        builder.Property(x => x.IdMedico).IsRequired(false);
+        builder.Property(x => x.IdHistorico).IsRequired(false);
         
         // RELACIONAMENTOS
         //N:N Receita (ReceitaConfiguration)

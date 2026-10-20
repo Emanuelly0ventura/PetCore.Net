@@ -20,7 +20,7 @@ public class RelatorioConfiguration : IEntityTypeConfiguration<Relatorio>
             .IsRequired();
         
         builder.Property(x => x.IdHistorico)
-            .IsRequired();
+            .IsRequired(false);
         
         builder.Property(x => x.IdMedicoResponsavel)
             .IsRequired();

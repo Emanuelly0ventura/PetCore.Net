@@ -25,7 +25,8 @@ public class HistoricoService(
     
     public HistoricoResponse Create(HistoricoRequest historicoRequest)
     {
-        var pet = petRepository.FetchById(historicoRequest.IdPet);
+        var petId = historicoRequest.PetIdMobile ?? historicoRequest.IdPet;
+        var pet = petRepository.FetchById(petId);
 
         if (pet is null)
             throw new KeyNotFoundException("Pet não encontrado para o histórico.");

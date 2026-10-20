@@ -13,6 +13,8 @@ public class Pet
     public string Porte { get; private set; }
     public GeneroSexoEnum Sexo { get; private set; }
     public bool Status { get; private set; }
+    public bool ObitoInformado { get; private set; }
+    public string ComedouroStatus { get; private set; } = "vazio";
     
     public string UrlImg { get; private set; }
     //RELACIONAMENTO
@@ -23,7 +25,7 @@ public class Pet
     {
     }
     
-    public Pet(string nome, string especie, string raca, DateOnly dataNasc, string pelagem, string porte, GeneroSexoEnum sexo, bool status, string urlImg)
+    public Pet(string nome, string especie, string raca, DateOnly dataNasc, string pelagem, string porte, GeneroSexoEnum sexo, bool status, string urlImg, bool obitoInformado = false, string comedouroStatus = "vazio")
     {
         
         if (string.IsNullOrWhiteSpace(nome))
@@ -38,7 +40,7 @@ public class Pet
             throw new Exception("Raça está vazia");
         Raca = raca.Trim();
 
-        if (dataNasc.Equals(null))
+        if (dataNasc == default || dataNasc > DateOnly.FromDateTime(DateTime.UtcNow))
             throw new Exception("Data de nascimento do Pet inválida");
         DataNasc = dataNasc;
         
@@ -56,15 +58,32 @@ public class Pet
         
         Status = status;
         
-        if (string.IsNullOrWhiteSpace(urlImg))
-            throw new Exception("UrlImg está vazia");
-        UrlImg = urlImg.Trim();
+        UrlImg = urlImg?.Trim() ?? string.Empty;
+        ObitoInformado = obitoInformado;
+        UpdateComedouroStatus(comedouroStatus);
         
     }
 
     public void UpdateStatus(bool status)
     {
         Status = status;
+    }
+
+    public void UpdateComedouroStatus(string status)
+    {
+        if (status is not ("cheio" or "vazio")) throw new ArgumentException("Status do comedouro deve ser 'cheio' ou 'vazio'.", nameof(status));
+        ComedouroStatus = status;
+    }
+
+    public void UpdateObitoInformado(bool informado) => ObitoInformado = informado;
+
+    public void UpdateDados(string nome, string especie, string raca, DateOnly dataNasc, string pelagem, string porte, GeneroSexoEnum sexo, bool obitoInformado, string comedouroStatus)
+    {
+        if (string.IsNullOrWhiteSpace(nome) || string.IsNullOrWhiteSpace(especie) || string.IsNullOrWhiteSpace(raca) || string.IsNullOrWhiteSpace(pelagem) || string.IsNullOrWhiteSpace(porte))
+            throw new ArgumentException("Nome, espécie, raça, pelagem e porte são obrigatórios.");
+        Nome = nome.Trim(); Especie = especie.Trim(); Raca = raca.Trim(); DataNasc = dataNasc;
+        Pelagem = pelagem.Trim(); Porte = porte.Trim(); Sexo = sexo;
+        ObitoInformado = obitoInformado; UpdateComedouroStatus(comedouroStatus);
     }
     
     public void updateUrlImg(string urlImg)

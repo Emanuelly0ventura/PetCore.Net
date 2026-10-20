@@ -105,10 +105,18 @@ namespace PetCore.Infrastructure.Migrations
                     b.Property<DateOnly>("Data")
                         .HasColumnType("date");
 
+                    b.Property<DateTime?>("DataEnvio").HasColumnType("timestamp with time zone");
+                    b.Property<string>("ArquivoSolicitacao").IsRequired().HasColumnType("text");
+                    b.Property<Guid?>("PetId").HasColumnType("uuid");
+                    b.Property<Guid?>("TutorId").HasColumnType("uuid");
+                    b.Property<string>("PetNome").IsRequired().HasColumnType("text");
+                    b.Property<string>("TutorNome").IsRequired().HasColumnType("text");
+                    b.Property<string>("VeterinarioNome").IsRequired().HasColumnType("text");
+
                     b.Property<Guid>("IdMedico")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("IdProntuario")
+                    b.Property<Guid?>("IdProntuario")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Nome")
@@ -132,6 +140,7 @@ namespace PetCore.Infrastructure.Migrations
                         {
                             Id = new Guid("80000000-0000-0000-0000-000000000001"),
                             Data = new DateOnly(2025, 5, 10),
+                            DataEnvio = (DateTime?)null, ArquivoSolicitacao = "", PetId = (Guid?)null, TutorId = (Guid?)null, PetNome = "", TutorNome = "", VeterinarioNome = "",
                             IdMedico = new Guid("40000000-0000-0000-0000-000000000001"),
                             IdProntuario = new Guid("70000000-0000-0000-0000-000000000001"),
                             Nome = "Hemograma da Luna",
@@ -141,6 +150,7 @@ namespace PetCore.Infrastructure.Migrations
                         {
                             Id = new Guid("80000000-0000-0000-0000-000000000002"),
                             Data = new DateOnly(2025, 6, 2),
+                            DataEnvio = (DateTime?)null, ArquivoSolicitacao = "", PetId = (Guid?)null, TutorId = (Guid?)null, PetNome = "", TutorNome = "", VeterinarioNome = "",
                             IdMedico = new Guid("40000000-0000-0000-0000-000000000002"),
                             IdProntuario = new Guid("70000000-0000-0000-0000-000000000002"),
                             Nome = "Ultrassom do Tobias",
@@ -239,6 +249,12 @@ namespace PetCore.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Clinica").HasMaxLength(200).HasColumnType("character varying(200)");
+                    b.Property<string>("NomeClinica").HasMaxLength(200).HasColumnType("character varying(200)");
+                    b.Property<string>("CnpjClinica").HasMaxLength(20).HasColumnType("character varying(20)");
+                    b.Property<string>("CepClinica").HasMaxLength(20).HasColumnType("character varying(20)");
+                    b.Property<string>("ComplementoClinica").HasMaxLength(200).HasColumnType("character varying(200)");
+
                     b.Property<string>("Especialidade")
                         .IsRequired()
                         .HasColumnType("text");
@@ -304,6 +320,11 @@ namespace PetCore.Infrastructure.Migrations
                     b.Property<DateOnly>("DataNasc")
                         .HasColumnType("date");
 
+                    b.Property<string>("ComedouroStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
                     b.Property<string>("Especie")
                         .IsRequired()
                         .HasColumnType("text");
@@ -311,6 +332,9 @@ namespace PetCore.Infrastructure.Migrations
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("ObitoInformado")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Pelagem")
                         .IsRequired()
@@ -343,8 +367,10 @@ namespace PetCore.Infrastructure.Migrations
                         {
                             Id = new Guid("50000000-0000-0000-0000-000000000001"),
                             DataNasc = new DateOnly(2021, 6, 18),
+                            ComedouroStatus = "vazio",
                             Especie = "Canina",
                             Nome = "Luna",
+                            ObitoInformado = false,
                             Pelagem = "Dourada",
                             Porte = "Grande",
                             Raca = "Golden Retriever",
@@ -356,8 +382,10 @@ namespace PetCore.Infrastructure.Migrations
                         {
                             Id = new Guid("50000000-0000-0000-0000-000000000002"),
                             DataNasc = new DateOnly(2022, 9, 5),
+                            ComedouroStatus = "vazio",
                             Especie = "Felina",
                             Nome = "Tobias",
+                            ObitoInformado = false,
                             Pelagem = "Creme e marrom",
                             Porte = "Pequeno",
                             Raca = "Siamês",
@@ -380,10 +408,34 @@ namespace PetCore.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("IdHistorico")
+                    b.Property<Guid?>("PetId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("IdMedico")
+                    b.Property<Guid?>("TutorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("PetNome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TutorNome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal?>("Temperatura")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("Peso")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Tratamento")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("IdHistorico")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("IdMedico")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -400,6 +452,7 @@ namespace PetCore.Infrastructure.Migrations
                             Id = new Guid("70000000-0000-0000-0000-000000000001"),
                             DataEmissao = new DateOnly(2025, 5, 10),
                             Descricao = "Consulta preventiva; pele sem alterações relevantes.",
+                            PetId = (Guid?)null, TutorId = (Guid?)null, PetNome = "", TutorNome = "", Temperatura = (decimal?)null, Peso = (decimal?)null, Tratamento = "",
                             IdHistorico = new Guid("30000000-0000-0000-0000-000000000001"),
                             IdMedico = new Guid("40000000-0000-0000-0000-000000000001")
                         },
@@ -408,6 +461,7 @@ namespace PetCore.Infrastructure.Migrations
                             Id = new Guid("70000000-0000-0000-0000-000000000002"),
                             DataEmissao = new DateOnly(2025, 6, 2),
                             Descricao = "Avaliação de rotina; ausculta cardíaca normal.",
+                            PetId = (Guid?)null, TutorId = (Guid?)null, PetNome = "", TutorNome = "", Temperatura = (decimal?)null, Peso = (decimal?)null, Tratamento = "",
                             IdHistorico = new Guid("30000000-0000-0000-0000-000000000002"),
                             IdMedico = new Guid("40000000-0000-0000-0000-000000000002")
                         });
@@ -428,6 +482,15 @@ namespace PetCore.Infrastructure.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
+                    b.Property<Guid?>("TutorId").HasColumnType("uuid");
+                    b.Property<Guid?>("PetId").HasColumnType("uuid");
+                    b.Property<Guid?>("VeterinarioId").HasColumnType("uuid");
+                    b.Property<string>("TutorNome").IsRequired().HasColumnType("text");
+                    b.Property<string>("PetNome").IsRequired().HasColumnType("text");
+                    b.Property<string>("VeterinarioNome").IsRequired().HasColumnType("text");
+                    b.Property<string>("TipoRegistro").IsRequired().HasMaxLength(40).HasColumnType("character varying(40)");
+                    b.Property<DateTime?>("DataEnvio").HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
                     b.ToTable("protocolo_petcore", (string)null);
@@ -436,18 +499,21 @@ namespace PetCore.Infrastructure.Migrations
                         new
                         {
                             Id = "PROTO1",
+                            TutorId = (Guid?)null, PetId = (Guid?)null, VeterinarioId = (Guid?)null, TutorNome = "", PetNome = "", VeterinarioNome = "", TipoRegistro = "protocolo", DataEnvio = (DateTime?)null,
                             Texto = "Pulgas, carrapatos e mosquitos podem transmitir doenças importantes aos pets. A prevenção pode ser feita com produtos tópicos, comprimidos ou coleiras específicas. Alguns produtos têm aplicação mensal, enquanto outros podem proteger por até três meses, conforme orientação do médico veterinário.",
                             Titulo = "Preventivo contra picadas"
                         },
                         new
                         {
                             Id = "PROTO2",
+                            TutorId = (Guid?)null, PetId = (Guid?)null, VeterinarioId = (Guid?)null, TutorNome = "", PetNome = "", VeterinarioNome = "", TipoRegistro = "protocolo", DataEnvio = (DateTime?)null,
                             Texto = "A vermifugação ajuda a prevenir parasitas intestinais que podem causar perda de peso, diarreia, anemia e outros problemas. A frequência varia conforme idade, ambiente, hábitos do pet e risco de exposição.",
                             Titulo = "Vermifugação"
                         },
                         new
                         {
                             Id = "PROTO3",
+                            TutorId = (Guid?)null, PetId = (Guid?)null, VeterinarioId = (Guid?)null, TutorNome = "", PetNome = "", VeterinarioNome = "", TipoRegistro = "protocolo", DataEnvio = (DateTime?)null,
                             Texto = "FIV e FeLV são doenças virais que acometem gatos. A testagem é importante, especialmente em felinos resgatados, com acesso à rua ou que convivem com outros gatos.",
                             Titulo = "FIV e FeLV"
                         });
@@ -462,14 +528,22 @@ namespace PetCore.Infrastructure.Migrations
                     b.Property<Guid>("IdMedicoResponsavel")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("IdProntuario")
+                    b.Property<string>("ArquivoReceita").IsRequired().HasColumnType("text");
+                    b.Property<DateTime?>("DataEnvio").HasColumnType("timestamp with time zone");
+                    b.Property<Guid?>("PetId").HasColumnType("uuid");
+                    b.Property<Guid?>("TutorId").HasColumnType("uuid");
+                    b.Property<string>("PetNome").IsRequired().HasColumnType("text");
+                    b.Property<string>("TutorNome").IsRequired().HasColumnType("text");
+                    b.Property<string>("VeterinarioNome").IsRequired().HasColumnType("text");
+
+                    b.Property<Guid?>("IdProntuario")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateOnly>("Validade")
+                    b.Property<DateOnly?>("Validade")
                         .HasColumnType("date");
 
                     b.HasKey("Id");
@@ -484,6 +558,7 @@ namespace PetCore.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("a0000000-0000-0000-0000-000000000001"),
+                            ArquivoReceita = "", DataEnvio = (DateTime?)null, PetId = (Guid?)null, TutorId = (Guid?)null, PetNome = "", TutorNome = "", VeterinarioNome = "",
                             IdMedicoResponsavel = new Guid("40000000-0000-0000-0000-000000000001"),
                             IdProntuario = new Guid("70000000-0000-0000-0000-000000000001"),
                             Nome = "Receita dermatológica - Luna",
@@ -492,6 +567,7 @@ namespace PetCore.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("a0000000-0000-0000-0000-000000000002"),
+                            ArquivoReceita = "", DataEnvio = (DateTime?)null, PetId = (Guid?)null, TutorId = (Guid?)null, PetNome = "", TutorNome = "", VeterinarioNome = "",
                             IdMedicoResponsavel = new Guid("40000000-0000-0000-0000-000000000002"),
                             IdProntuario = new Guid("70000000-0000-0000-0000-000000000002"),
                             Nome = "Receita preventiva - Tobias",
@@ -505,8 +581,15 @@ namespace PetCore.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("IdHistorico")
+                    b.Property<Guid?>("IdHistorico")
                         .HasColumnType("uuid");
+
+                    b.Property<Guid?>("PetId").HasColumnType("uuid");
+                    b.Property<Guid?>("TutorId").HasColumnType("uuid");
+                    b.Property<string>("PetNome").IsRequired().HasColumnType("text");
+                    b.Property<string>("TutorNome").IsRequired().HasColumnType("text");
+                    b.Property<string>("ArquivoHistorico").IsRequired().HasColumnType("text");
+                    b.Property<string>("Prontuarios").IsRequired().HasColumnType("text");
 
                     b.Property<Guid>("IdMedicoResponsavel")
                         .HasColumnType("uuid");
@@ -527,6 +610,7 @@ namespace PetCore.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("b0000000-0000-0000-0000-000000000001"),
+                            PetId = (Guid?)null, TutorId = (Guid?)null, PetNome = "", TutorNome = "", ArquivoHistorico = "", Prontuarios = "",
                             IdHistorico = new Guid("30000000-0000-0000-0000-000000000001"),
                             IdMedicoResponsavel = new Guid("40000000-0000-0000-0000-000000000001"),
                             Observacao = "Retorno sugerido em seis meses para acompanhamento preventivo."
@@ -534,6 +618,7 @@ namespace PetCore.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("b0000000-0000-0000-0000-000000000002"),
+                            PetId = (Guid?)null, TutorId = (Guid?)null, PetNome = "", TutorNome = "", ArquivoHistorico = "", Prontuarios = "",
                             IdHistorico = new Guid("30000000-0000-0000-0000-000000000002"),
                             IdMedicoResponsavel = new Guid("40000000-0000-0000-0000-000000000002"),
                             Observacao = "Manter rotina de hidratação e retorno anual."

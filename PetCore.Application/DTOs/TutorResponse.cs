@@ -1,5 +1,6 @@
 using PetCore.Domain.Entities;
 using PetCore.Domain.Enums;
+using System.Text.Json.Serialization;
 
 namespace PetCore.Application.DTOs;
 
@@ -7,12 +8,15 @@ public class TutorResponse
 {
     public Guid Id { get;  set; }
     public string Nome { get;  set; }
-    public DateOnly DataNascimento { get;  set; }
+    [JsonIgnore] public DateOnly DataNascimento { get;  set; }
+    public string Nascimento => DataNascimento.ToString("dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
     public string Telefone { get;  set; }
     public string Email{ get;  set; }
-    public GeneroSexoEnum Sexo { get;  set; }
+    [JsonIgnore] public GeneroSexoEnum Sexo { get;  set; }
+    public string Genero => Sexo == GeneroSexoEnum.F ? "Feminino" : "Masculino";
 
-    public string UrlImg { get; set; }
+    [JsonPropertyName("fotoUrl")] public string UrlImg { get; set; }
+    public string TipoPerfil => "tutor";
 
     public TutorResponse(Tutor tutor)
     {

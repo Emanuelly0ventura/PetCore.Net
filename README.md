@@ -77,6 +77,12 @@ O sistema contempla relacionamentos entre entidades, como:
 
 Os recursos gerais continuam no **PostgreSQL** via EF Core. O recurso `Historico` usa a coleção MongoDB `historicos`. Para verificar um serviço externo, informe a URL no campo `ExternalServices:BaseUrl` de `PetCore.Api/appsettings.json`.
 
+### Compatibilidade com o aplicativo mobile
+
+Os DTOs aceitam os campos do mobile (`nascimento`, `fotoUrl`, `genero`, `tutorId`, `comedouroStatus`, `dataConsulta`, `observacoes`, `tipoExame`, `arquivoSolicitacao`, `arquivoReceita`, `arquivoHistorico` e os dados de tutor/pet/veterinário). Os registros de prontuário, exame e receita guardam as referências de arquivos como texto; a API não faz upload de arquivos. Quando o mobile não envia vínculo clínico (`idMedico`, `idHistorico` ou `idProntuario`), os campos correspondentes podem ficar vazios no registro.
+
+As novas colunas e os campos opcionais estão na migration `AddMobilePetFields`. Para atualizar uma base PostgreSQL já existente, execute `dotnet ef database update --project PetCore.Infrastructure --startup-project PetCore.Api --context PetCoreContext` com `ConnectionStrings__DefaultConnection` apontando para a base desejada. A migration ainda não foi aplicada a nenhum banco por esta alteração.
+
 ### Logs, correlação e rastreabilidade
 
 O Serilog escreve logs estruturados nos níveis Information, Warning e Error tanto no console como em `PetCore.Api/logs/`, com retenção de 14 dias. Toda requisição recebe/devolve o cabeçalho `X-Correlation-ID`; envie-o na chamada para correlacionar os eventos de ponta a ponta.

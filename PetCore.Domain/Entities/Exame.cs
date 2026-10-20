@@ -9,7 +9,14 @@ public class Exame : DocumentoBase
     //N:1 Medico
     public Guid IdMedico { get; set; }
     //N:1 Prontuario
-    public Guid IdProntuario { get; set; }
+    public Guid? IdProntuario { get; set; }
+    public Guid? PetId { get; private set; }
+    public Guid? TutorId { get; private set; }
+    public string PetNome { get; private set; } = string.Empty;
+    public string TutorNome { get; private set; } = string.Empty;
+    public string VeterinarioNome { get; private set; } = string.Empty;
+    public string ArquivoSolicitacao { get; private set; } = string.Empty;
+    public DateTime? DataEnvio { get; private set; }
     
     //RELACIONAMENTOS
     public Medico Medico { get; private set; } 
@@ -19,7 +26,9 @@ public class Exame : DocumentoBase
     {
     }
     
-    public Exame(string nome, DateOnly data, string tipo, Guid idMedico, Guid idProntuario)
+    public Exame(string nome, DateOnly data, string tipo, Guid idMedico, Guid? idProntuario,
+        Guid? petId = null, Guid? tutorId = null, string? petNome = null, string? tutorNome = null,
+        string? veterinarioNome = null, string? arquivoSolicitacao = null, DateTime? dataEnvio = null)
     {
         UpdateNome(nome);
         
@@ -31,9 +40,12 @@ public class Exame : DocumentoBase
             throw new Exception("Id do medico inválido");
         IdMedico = idMedico;
         
-        if (idProntuario == Guid.Empty)
-            throw new Exception("Id do prontuario inválido");
+        if (idProntuario == Guid.Empty) throw new Exception("Id do prontuário inválido");
         IdProntuario = idProntuario;
+        if (petId == Guid.Empty || tutorId == Guid.Empty) throw new Exception("Pet/tutor inválidos");
+        PetId = petId; TutorId = tutorId; PetNome = petNome?.Trim() ?? string.Empty;
+        TutorNome = tutorNome?.Trim() ?? string.Empty; VeterinarioNome = veterinarioNome?.Trim() ?? string.Empty;
+        ArquivoSolicitacao = arquivoSolicitacao?.Trim() ?? string.Empty; DataEnvio = dataEnvio;
     }
 
     public void Update(string nome, DateOnly data, string tipo)

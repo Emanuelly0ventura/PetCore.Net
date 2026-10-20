@@ -7,9 +7,11 @@ namespace PetCore.Application.Services.Implementations;
 public class PetService(IPetRepository petRepository,
     ITutorRepository tutorRepository) : IPetService
 {
-    public IReadOnlyCollection<PetResponse> FetchAll()
+    public IReadOnlyCollection<PetResponse> FetchAll(Guid? tutorId = null)
     {
-        return petRepository.FetchAll()
+        var pets = petRepository.FetchAll();
+        if (tutorId.HasValue) pets = pets.Where(p => p.Tutores.Any(t => t.Id == tutorId.Value)).ToList();
+        return pets
             .Select(pet => new PetResponse(pet))
             .ToList();
     }
@@ -32,8 +34,11 @@ public class PetService(IPetRepository petRepository,
     {
         var pet = petRequest.ToDomain();
 
-        var tutores = tutorRepository
-            .FetchAllById(petRequest.IdTutores ?? []);
+        var tutorIds = petRequest.IdTutores ?? [];
+        if (petRequest.TutorIdMobile.HasValue && !tutorIds.Contains(petRequest.TutorIdMobile.Value)) tutorIds.Add(petRequest.TutorIdMobile.Value);
+        if (tutorIds.Count == 0) throw new ArgumentException("Informe o tutorId do pet.");
+        var tutores = tutorRepository.FetchAllById(tutorIds);
+        if (tutores.Count != tutorIds.Distinct().Count()) throw new KeyNotFoundException("Um ou mais tutores informados não existem.");
 
         pet.Tutores = tutores.ToList();
 
@@ -51,10 +56,23 @@ public class PetService(IPetRepository petRepository,
             return null;
         
         var changed = false;
+
+        if (petRequest.Nome is not null && petRequest.Especie is not null && petRequest.Raca is not null && petRequest.Pelagem is not null && petRequest.Porte is not null && petRequest.DataNasc.HasValue && petRequest.Sexo.HasValue)
+        {
+            pet.UpdateDados(petRequest.Nome, petRequest.Especie, petRequest.Raca, petRequest.DataNasc.Value,
+                petRequest.Pelagem, petRequest.Porte, petRequest.Sexo.Value,
+                petRequest.ObitoInformado ?? pet.ObitoInformado, petRequest.ComedouroStatus ?? pet.ComedouroStatus);
+            changed = true;
+        }
+        else
+        {
+            if (petRequest.ObitoInformado.HasValue) { pet.UpdateObitoInformado(petRequest.ObitoInformado.Value); changed = true; }
+            if (!string.IsNullOrWhiteSpace(petRequest.ComedouroStatus)) { pet.UpdateComedouroStatus(petRequest.ComedouroStatus); changed = true; }
+        }
         
         if (petRequest.Status != null)
         {
-            pet.UpdateStatus(petRequest.Status);
+            pet.UpdateStatus(petRequest.Status.Value);
             changed = true;
         }
         

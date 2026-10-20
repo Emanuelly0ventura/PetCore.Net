@@ -13,5 +13,9 @@ public class ProtocoloConfiguration : IEntityTypeConfiguration<Protocolo>
         builder.Property(x => x.Id).HasMaxLength(20);
         builder.Property(x => x.Titulo).IsRequired().HasMaxLength(150);
         builder.Property(x => x.Texto).IsRequired();
+        builder.Property(x => x.TutorNome).IsRequired();
+        builder.Property(x => x.PetNome).IsRequired();
+        builder.Property(x => x.VeterinarioNome).IsRequired();
+        builder.Property(x => x.TipoRegistro).IsRequired().HasMaxLength(40);
     }
 }

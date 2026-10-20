@@ -38,6 +38,12 @@ public class MedicoConfiguration : IEntityTypeConfiguration<Medico>
         
         builder.Property(x => x.Especialidade)
             .IsRequired();
+
+        builder.Property(x => x.Clinica).HasMaxLength(200);
+        builder.Property(x => x.NomeClinica).HasMaxLength(200);
+        builder.Property(x => x.CnpjClinica).HasMaxLength(20);
+        builder.Property(x => x.CepClinica).HasMaxLength(20);
+        builder.Property(x => x.ComplementoClinica).HasMaxLength(200);
         
         // RELACIONAMENTOS
         //1:N Relatorio (RelatorioConfiguration)

@@ -31,7 +31,13 @@ public sealed class MongoHistoricoRepository : IHistoricoRepository
             Id = historico.Id,
             DataAbertura = historico.DataAbertura.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc),
             Status = historico.Status,
-            IdPet = historico.IdPet
+            IdPet = historico.IdPet,
+            TutorId = historico.TutorId,
+            TutorNome = historico.TutorNome,
+            PetNome = historico.PetNome,
+            TipoRegistro = historico.TipoRegistro,
+            StatusMobile = historico.StatusMobile,
+            DataSolicitacao = historico.DataSolicitacao
         });
 
     public void Delete(Historico historico) =>
@@ -45,6 +51,8 @@ public sealed class MongoHistoricoRepository : IHistoricoRepository
         if (document.IdPet is null || document.IdPet == Guid.Empty)
             throw new InvalidOperationException($"O histórico {document.Id} não contém um IdPet válido.");
 
-        return Historico.Restore(document.Id, DateOnly.FromDateTime(document.DataAbertura), document.Status, document.IdPet.Value);
+        var historico = Historico.Restore(document.Id, DateOnly.FromDateTime(document.DataAbertura), document.Status, document.IdPet.Value);
+        historico.SetMobileData(document.TutorId, document.TutorNome, document.PetNome, document.TipoRegistro, document.StatusMobile, document.DataSolicitacao);
+        return historico;
     }
 }

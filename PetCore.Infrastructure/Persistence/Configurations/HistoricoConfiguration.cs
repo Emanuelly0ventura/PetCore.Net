@@ -20,6 +20,14 @@ public class HistoricoConfiguration : IEntityTypeConfiguration<Historico>
         builder.Property(x => x.Status)
             .IsRequired();
 
+        // Campos exclusivos do documento Mongo; não pertencem à tabela legada do EF.
+        builder.Ignore(x => x.TutorId);
+        builder.Ignore(x => x.TutorNome);
+        builder.Ignore(x => x.PetNome);
+        builder.Ignore(x => x.TipoRegistro);
+        builder.Ignore(x => x.StatusMobile);
+        builder.Ignore(x => x.DataSolicitacao);
+
         
         // RELACIONAMENTOS
         //1:N Relatorios (RelatorioConfiguration)

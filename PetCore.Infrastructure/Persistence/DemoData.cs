@@ -49,37 +49,37 @@ internal static class DemoData
             new { Id = MedicoRafael, Nome = "Dr. Rafael Nogueira", DataNascimento = new DateOnly(1982, 2, 20), Telefone = "11976543210", Email = "rafael.nogueira@exemplo.test", Sexo = GeneroSexoEnum.M, Senha = "SenhaDemo#2026", UrlImg = "https://exemplo.test/medicos/rafael.jpg", Especialidade = "Cardiologia" });
 
         modelBuilder.Entity<Pet>().HasData(
-            new { Id = PetLuna, Nome = "Luna", Especie = "Canina", Raca = "Golden Retriever", DataNasc = new DateOnly(2021, 6, 18), Pelagem = "Dourada", Porte = "Grande", Sexo = GeneroSexoEnum.F, Status = true, UrlImg = "https://exemplo.test/pets/luna.jpg" },
-            new { Id = PetTobias, Nome = "Tobias", Especie = "Felina", Raca = "Siamês", DataNasc = new DateOnly(2022, 9, 5), Pelagem = "Creme e marrom", Porte = "Pequeno", Sexo = GeneroSexoEnum.M, Status = true, UrlImg = "https://exemplo.test/pets/tobias.jpg" });
+            new { Id = PetLuna, Nome = "Luna", Especie = "Canina", Raca = "Golden Retriever", DataNasc = new DateOnly(2021, 6, 18), Pelagem = "Dourada", Porte = "Grande", Sexo = GeneroSexoEnum.F, Status = true, UrlImg = "https://exemplo.test/pets/luna.jpg", ObitoInformado = false, ComedouroStatus = "vazio" },
+            new { Id = PetTobias, Nome = "Tobias", Especie = "Felina", Raca = "Siamês", DataNasc = new DateOnly(2022, 9, 5), Pelagem = "Creme e marrom", Porte = "Pequeno", Sexo = GeneroSexoEnum.M, Status = true, UrlImg = "https://exemplo.test/pets/tobias.jpg", ObitoInformado = false, ComedouroStatus = "vazio" });
 
         modelBuilder.Entity<Tutor>().HasData(
             new { Id = TutorMarina, Nome = "Marina Alves", DataNascimento = new DateOnly(1991, 11, 3), Telefone = "11991234567", Email = "marina.alves@exemplo.test", Sexo = GeneroSexoEnum.F, Senha = "SenhaDemo#2026", UrlImg = "https://exemplo.test/tutores/marina.jpg" },
             new { Id = TutorBruno, Nome = "Bruno Ferreira", DataNascimento = new DateOnly(1988, 5, 25), Telefone = "11992345678", Email = "bruno.ferreira@exemplo.test", Sexo = GeneroSexoEnum.M, Senha = "SenhaDemo#2026", UrlImg = "https://exemplo.test/tutores/bruno.jpg" });
 
         modelBuilder.Entity<Prontuario>().HasData(
-            new { Id = ProntuarioLuna, DataEmissao = new DateOnly(2025, 5, 10), Descricao = "Consulta preventiva; pele sem alterações relevantes.", IdMedico = MedicoHelena, IdHistorico = HistoricoLuna },
-            new { Id = ProntuarioTobias, DataEmissao = new DateOnly(2025, 6, 2), Descricao = "Avaliação de rotina; ausculta cardíaca normal.", IdMedico = MedicoRafael, IdHistorico = HistoricoTobias });
+            new { Id = ProntuarioLuna, DataEmissao = new DateOnly(2025, 5, 10), Descricao = "Consulta preventiva; pele sem alterações relevantes.", IdMedico = (Guid?)MedicoHelena, IdHistorico = (Guid?)HistoricoLuna, PetId = (Guid?)PetLuna, TutorId = (Guid?)TutorMarina, PetNome = "Luna", TutorNome = "Marina Alves", Temperatura = (decimal?)null, Peso = (decimal?)null, Tratamento = "" },
+            new { Id = ProntuarioTobias, DataEmissao = new DateOnly(2025, 6, 2), Descricao = "Avaliação de rotina; ausculta cardíaca normal.", IdMedico = (Guid?)MedicoRafael, IdHistorico = (Guid?)HistoricoTobias, PetId = (Guid?)PetTobias, TutorId = (Guid?)TutorBruno, PetNome = "Tobias", TutorNome = "Bruno Ferreira", Temperatura = (decimal?)null, Peso = (decimal?)null, Tratamento = "" });
 
         modelBuilder.Entity<Exame>().HasData(
-            new { Id = ExameLuna, Nome = "Hemograma da Luna", Data = new DateOnly(2025, 5, 10), Tipo = "Hemograma completo", IdMedico = MedicoHelena, IdProntuario = ProntuarioLuna },
-            new { Id = ExameTobias, Nome = "Ultrassom do Tobias", Data = new DateOnly(2025, 6, 2), Tipo = "Ultrassom abdominal", IdMedico = MedicoRafael, IdProntuario = ProntuarioTobias });
+            new { Id = ExameLuna, Nome = "Hemograma da Luna", Data = new DateOnly(2025, 5, 10), Tipo = "Hemograma completo", IdMedico = MedicoHelena, IdProntuario = (Guid?)ProntuarioLuna, PetId = (Guid?)PetLuna, TutorId = (Guid?)TutorMarina, PetNome = "Luna", TutorNome = "Marina Alves", VeterinarioNome = "Dra. Helena Duarte", ArquivoSolicitacao = "", DataEnvio = (DateTime?)null },
+            new { Id = ExameTobias, Nome = "Ultrassom do Tobias", Data = new DateOnly(2025, 6, 2), Tipo = "Ultrassom abdominal", IdMedico = MedicoRafael, IdProntuario = (Guid?)ProntuarioTobias, PetId = (Guid?)PetTobias, TutorId = (Guid?)TutorBruno, PetNome = "Tobias", TutorNome = "Bruno Ferreira", VeterinarioNome = "Dr. Rafael Nogueira", ArquivoSolicitacao = "", DataEnvio = (DateTime?)null });
 
         modelBuilder.Entity<Medicamento>().HasData(
             new { Id = MedicamentoLuna, Nome = "Dermocalm Vet (fictício)", Dosagem = "1 comprimido a cada 24 horas", Instrucao = "Administrar após a alimentação por 5 dias." },
             new { Id = MedicamentoTobias, Nome = "CardioPet (fictício)", Dosagem = "1/2 comprimido a cada 12 horas", Instrucao = "Administrar conforme prescrição veterinária." });
 
         modelBuilder.Entity<Receita>().HasData(
-            new { Id = ReceitaLuna, Nome = "Receita dermatológica - Luna", Validade = new DateOnly(2025, 12, 10), IdMedicoResponsavel = MedicoHelena, IdProntuario = ProntuarioLuna },
-            new { Id = ReceitaTobias, Nome = "Receita preventiva - Tobias", Validade = new DateOnly(2025, 12, 2), IdMedicoResponsavel = MedicoRafael, IdProntuario = ProntuarioTobias });
+            new { Id = ReceitaLuna, Nome = "Receita dermatológica - Luna", Validade = (DateOnly?)new DateOnly(2025, 12, 10), IdMedicoResponsavel = MedicoHelena, IdProntuario = (Guid?)ProntuarioLuna, PetId = (Guid?)PetLuna, TutorId = (Guid?)TutorMarina, PetNome = "Luna", TutorNome = "Marina Alves", VeterinarioNome = "Dra. Helena Duarte", ArquivoReceita = "", DataEnvio = (DateTime?)null },
+            new { Id = ReceitaTobias, Nome = "Receita preventiva - Tobias", Validade = (DateOnly?)new DateOnly(2025, 12, 2), IdMedicoResponsavel = MedicoRafael, IdProntuario = (Guid?)ProntuarioTobias, PetId = (Guid?)PetTobias, TutorId = (Guid?)TutorBruno, PetNome = "Tobias", TutorNome = "Bruno Ferreira", VeterinarioNome = "Dr. Rafael Nogueira", ArquivoReceita = "", DataEnvio = (DateTime?)null });
 
         modelBuilder.Entity<Relatorio>().HasData(
-            new { Id = RelatorioLuna, Observacao = "Retorno sugerido em seis meses para acompanhamento preventivo.", IdHistorico = HistoricoLuna, IdMedicoResponsavel = MedicoHelena },
-            new { Id = RelatorioTobias, Observacao = "Manter rotina de hidratação e retorno anual.", IdHistorico = HistoricoTobias, IdMedicoResponsavel = MedicoRafael });
+            new { Id = RelatorioLuna, Observacao = "Retorno sugerido em seis meses para acompanhamento preventivo.", IdHistorico = (Guid?)HistoricoLuna, IdMedicoResponsavel = MedicoHelena, PetId = (Guid?)PetLuna, TutorId = (Guid?)TutorMarina, PetNome = "Luna", TutorNome = "Marina Alves", ArquivoHistorico = "", Prontuarios = "" },
+            new { Id = RelatorioTobias, Observacao = "Manter rotina de hidratação e retorno anual.", IdHistorico = (Guid?)HistoricoTobias, IdMedicoResponsavel = MedicoRafael, PetId = (Guid?)PetTobias, TutorId = (Guid?)TutorBruno, PetNome = "Tobias", TutorNome = "Bruno Ferreira", ArquivoHistorico = "", Prontuarios = "" });
 
         modelBuilder.Entity<Protocolo>().HasData(
-            new { Id = "PROTO1", Titulo = "Preventivo contra picadas", Texto = "Pulgas, carrapatos e mosquitos podem transmitir doenças importantes aos pets. A prevenção pode ser feita com produtos tópicos, comprimidos ou coleiras específicas. Alguns produtos têm aplicação mensal, enquanto outros podem proteger por até três meses, conforme orientação do médico veterinário." },
-            new { Id = "PROTO2", Titulo = "Vermifugação", Texto = "A vermifugação ajuda a prevenir parasitas intestinais que podem causar perda de peso, diarreia, anemia e outros problemas. A frequência varia conforme idade, ambiente, hábitos do pet e risco de exposição." },
-            new { Id = "PROTO3", Titulo = "FIV e FeLV", Texto = "FIV e FeLV são doenças virais que acometem gatos. A testagem é importante, especialmente em felinos resgatados, com acesso à rua ou que convivem com outros gatos." });
+            new { Id = "PROTO1", Titulo = "Preventivo contra picadas", Texto = "Pulgas, carrapatos e mosquitos podem transmitir doenças importantes aos pets. A prevenção pode ser feita com produtos tópicos, comprimidos ou coleiras específicas. Alguns produtos têm aplicação mensal, enquanto outros podem proteger por até três meses, conforme orientação do médico veterinário.", TutorId = (Guid?)null, PetId = (Guid?)null, VeterinarioId = (Guid?)null, TutorNome = "", PetNome = "", VeterinarioNome = "", TipoRegistro = "protocolo", DataEnvio = (DateTime?)null },
+            new { Id = "PROTO2", Titulo = "Vermifugação", Texto = "A vermifugação ajuda a prevenir parasitas intestinais que podem causar perda de peso, diarreia, anemia e outros problemas. A frequência varia conforme idade, ambiente, hábitos do pet e risco de exposição.", TutorId = (Guid?)null, PetId = (Guid?)null, VeterinarioId = (Guid?)null, TutorNome = "", PetNome = "", VeterinarioNome = "", TipoRegistro = "protocolo", DataEnvio = (DateTime?)null },
+            new { Id = "PROTO3", Titulo = "FIV e FeLV", Texto = "FIV e FeLV são doenças virais que acometem gatos. A testagem é importante, especialmente em felinos resgatados, com acesso à rua ou que convivem com outros gatos.", TutorId = (Guid?)null, PetId = (Guid?)null, VeterinarioId = (Guid?)null, TutorNome = "", PetNome = "", VeterinarioNome = "", TipoRegistro = "protocolo", DataEnvio = (DateTime?)null });
 
         modelBuilder.SharedTypeEntity<Dictionary<string, object>>("tut_pet_petcore").HasData(
             new { ID_tut_FK = TutorMarina, ID_pet_FK = PetLuna },

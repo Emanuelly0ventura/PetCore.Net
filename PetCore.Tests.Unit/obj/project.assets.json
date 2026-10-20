@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 3,
   "targets": {
     "net10.0": {
       "Castle.Core/5.1.1": {
@@ -1022,7 +1022,6 @@
       },
       "frameworks": {
         "net10.0": {
-          "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {
             "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Application\\PetCore.Application.csproj": {
@@ -1048,7 +1047,6 @@
     },
     "frameworks": {
       "net10.0": {
-        "framework": "net10.0",
         "targetAlias": "net10.0",
         "dependencies": {
           "Microsoft.NET.Test.Sdk": {
