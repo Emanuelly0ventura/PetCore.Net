@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 const string CorsPolicyName = "PublicApi";
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? ["*"];
+ 
 
 builder.Services.AddCors(options =>
 {

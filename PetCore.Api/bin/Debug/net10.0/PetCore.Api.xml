@@ -439,6 +439,12 @@
             <response code="200">Tutor encontrado com sucesso.</response>
             <response code="404">Nenhum tutor encontrado com as credenciais informadas.</response>
         </member>
+        <member name="T:PetCoreContextFactory">
+            <summary>
+            Creates the PostgreSQL context for EF Core tooling without starting the API
+            or requiring its MongoDB configuration.
+            </summary>
+        </member>
         <member name="T:Program">
             <summary>
             
