@@ -1,8 +1,10 @@
+using PetCore.Application.DTOs;
 namespace PetCore.Application.Interfaces;
 
 public interface IRepository<T> where T : class
 {
     IReadOnlyCollection<T> FetchAll();
+    PagedData<T> FetchPage(PageQuery query);
     
     T? FetchById(Guid id);
     

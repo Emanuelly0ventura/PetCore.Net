@@ -1,3 +1,4 @@
+using PetCore.Domain.Exceptions;
 namespace PetCore.Domain.Entities;
 
 public class Historico
@@ -30,7 +31,7 @@ public class Historico
     public Historico(DateOnly data, Guid idPet)
     {
         if (data.Year > DateTime.Now.Year || data.Equals(null))
-            throw new Exception("Data inválida");
+            throw new DomainValidationException("Data inválida");
         DataAbertura = data;
 
         if (idPet == Guid.Empty)

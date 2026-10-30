@@ -13,6 +13,12 @@ public class ClinicaService(IClinicaRepository clinicaRepository) : IClinicaServ
             .ToList();
     }
     
+    public PagedData<ClinicaResponse> FetchPage(PageQuery query)
+    {
+        var page = clinicaRepository.FetchPage(query);
+        return new PagedData<ClinicaResponse>(page.Items.Select(item => new ClinicaResponse(item)).ToList(), page.Page, page.PageSize, page.TotalItems, page.TotalPages);
+    }
+
     public ClinicaResponse? FetchById(Guid id)
     {
         var clinica = clinicaRepository.FetchById(id);

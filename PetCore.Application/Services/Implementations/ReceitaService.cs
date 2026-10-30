@@ -14,6 +14,12 @@ public class ReceitaService(IReceitaRepository receitaRepository,
             .ToList();
     }
     
+    public PagedData<ReceitaResponse> FetchPage(PageQuery query)
+    {
+        var page = receitaRepository.FetchPage(query);
+        return new PagedData<ReceitaResponse>(page.Items.Select(item => new ReceitaResponse(item)).ToList(), page.Page, page.PageSize, page.TotalItems, page.TotalPages);
+    }
+
     public ReceitaResponse? FetchById(Guid id)
     {
         var rec = receitaRepository.FetchById(id);

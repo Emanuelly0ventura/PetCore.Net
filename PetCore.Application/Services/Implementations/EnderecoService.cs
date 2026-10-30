@@ -13,6 +13,12 @@ public class EnderecoService(IEnderecoRepository enderecoRepository) : IEndereco
             .ToList();
     }
     
+    public PagedData<EnderecoResponse> FetchPage(PageQuery query)
+    {
+        var page = enderecoRepository.FetchPage(query);
+        return new PagedData<EnderecoResponse>(page.Items.Select(item => new EnderecoResponse(item)).ToList(), page.Page, page.PageSize, page.TotalItems, page.TotalPages);
+    }
+
     public EnderecoResponse? FetchById(Guid id)
     {
         var end = enderecoRepository.FetchById(id);

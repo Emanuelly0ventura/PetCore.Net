@@ -13,7 +13,7 @@ public static class ObservabilityExtensions
         services.AddHttpClient("external-health", client => client.Timeout = TimeSpan.FromSeconds(5));
 
         services.AddHealthChecks()
-            .AddDbContextCheck<PetCoreContext>("postgresql", tags: ["ready", "database"])
+            .AddDbContextCheck<PetCoreContext>("sqlserver", tags: ["ready", "database"])
             .AddCheck<MongoHealthCheck>("mongodb", tags: ["ready", "database", "nosql"])
             .AddCheck<ExternalServiceHealthCheck>("external-service", tags: ["ready", "external"]);
 
@@ -36,3 +36,4 @@ public static class ObservabilityExtensions
     public static IApplicationBuilder UseApiMetrics(this IApplicationBuilder app) =>
         app.UseMiddleware<ApiMetricsMiddleware>();
 }
+

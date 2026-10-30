@@ -1,3 +1,4 @@
+using PetCore.Domain.Exceptions;
 namespace PetCore.Domain.Entities;
 
 public class Endereco
@@ -23,14 +24,14 @@ public class Endereco
     public void UpdateCep(string cep)
     {
         if (string.IsNullOrWhiteSpace(cep))
-            throw new Exception("Cep está vazia");
+            throw new DomainValidationException("Cep está vazia");
         Cep = cep.Trim();
     }
 
     public void UpdateComplemento(string complemento)
     {
         if (string.IsNullOrWhiteSpace(complemento))
-            throw new Exception("Complemento está vazia");
+            throw new DomainValidationException("Complemento está vazia");
         Complemento = complemento.Trim();
     }
 }

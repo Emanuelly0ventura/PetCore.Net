@@ -13,6 +13,12 @@ public class ExameService(IExameRepository exameRepository) : IExameService
             .ToList();
     }
     
+    public PagedData<ExameResponse> FetchPage(PageQuery query)
+    {
+        var page = exameRepository.FetchPage(query);
+        return new PagedData<ExameResponse>(page.Items.Select(item => new ExameResponse(item)).ToList(), page.Page, page.PageSize, page.TotalItems, page.TotalPages);
+    }
+
     public ExameResponse? FetchById(Guid id)
     {
         var exame = exameRepository.FetchById(id);
@@ -43,9 +49,9 @@ public class ExameService(IExameRepository exameRepository) : IExameService
             changed = true;
         }
 
-        if (!exameRequest.Data.Equals(null))
+        if (exameRequest.Data.HasValue)
         {
-            ex.UpdateDate(exameRequest.Data);
+            ex.UpdateDate(exameRequest.Data.Value);
             changed = true;
         }
         

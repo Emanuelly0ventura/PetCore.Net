@@ -1,3 +1,4 @@
+using PetCore.Domain.Exceptions;
 using PetCore.Domain.Commons;
 
 namespace PetCore.Domain.Entities;
@@ -37,12 +38,12 @@ public class Exame : DocumentoBase
         UpdateTipo(tipo);
         
         if (idMedico == Guid.Empty)
-            throw new Exception("Id do medico inválido");
+            throw new DomainValidationException("Id do medico inválido");
         IdMedico = idMedico;
         
-        if (idProntuario == Guid.Empty) throw new Exception("Id do prontuário inválido");
+        if (idProntuario == Guid.Empty) throw new DomainValidationException("Id do prontuário inválido");
         IdProntuario = idProntuario;
-        if (petId == Guid.Empty || tutorId == Guid.Empty) throw new Exception("Pet/tutor inválidos");
+        if (petId == Guid.Empty || tutorId == Guid.Empty) throw new DomainValidationException("Pet/tutor inválidos");
         PetId = petId; TutorId = tutorId; PetNome = petNome?.Trim() ?? string.Empty;
         TutorNome = tutorNome?.Trim() ?? string.Empty; VeterinarioNome = veterinarioNome?.Trim() ?? string.Empty;
         ArquivoSolicitacao = arquivoSolicitacao?.Trim() ?? string.Empty; DataEnvio = dataEnvio;
@@ -58,21 +59,21 @@ public class Exame : DocumentoBase
     public void UpdateNome(string nome)
     {
         if (string.IsNullOrEmpty(nome))
-            throw new Exception("Nome está vazio");
+            throw new DomainValidationException("Nome está vazio");
         Nome = nome.Trim();
     }
 
     public void UpdateDate(DateOnly data)
     {
-        if (data.Year > DateTime.Now.Year || data.Equals(null))
-            throw new Exception("Data inválida");
+        if (data == default || data > DateOnly.FromDateTime(DateTime.Today))
+            throw new DomainValidationException("Data inválida");
         Data = data;
     }
     
     public void  UpdateTipo(string tipo)
     {
         if (string.IsNullOrEmpty(tipo))
-            throw new Exception("Tipo está vazio");
+            throw new DomainValidationException("Tipo está vazio");
         Tipo = tipo;
     }
 }

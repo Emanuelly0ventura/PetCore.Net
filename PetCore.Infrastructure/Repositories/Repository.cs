@@ -1,5 +1,7 @@
 using PetCore.Application.Interfaces;
+using PetCore.Application.DTOs;
 using PetCore.Infrastructure.Persistence;
+using PetCore.Infrastructure.Persistence.Pagination;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +11,10 @@ namespace PetCore.Infrastructure.Repositories;
 public class Repository<T>(PetCoreContext context)  : IRepository<T> where T : class
 {
     protected DbSet<T> Set => context.Set<T>();
+    protected virtual IQueryable<T> Queryable => Set.AsNoTracking();
+
+    public virtual PagedData<T> FetchPage(PageQuery query) => EfPagination.FetchPage(Queryable, query);
+
     public IReadOnlyCollection<T> FetchAll()
     {
         return Set.ToList();

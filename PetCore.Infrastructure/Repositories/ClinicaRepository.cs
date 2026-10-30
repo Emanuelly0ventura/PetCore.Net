@@ -7,6 +7,8 @@ namespace PetCore.Infrastructure.Repositories;
 
 public class ClinicaRepository (PetCoreContext context) : Repository<Clinica>(context), IClinicaRepository
 {
+    protected override IQueryable<Clinica> Queryable => Set.Include(x => x.Endereco).AsNoTracking();
+
     public new IReadOnlyCollection<Clinica> FetchAll() => Set.Include(x => x.Endereco).ToList();
 
     public new Clinica? FetchById(Guid id) => Set.Include(x => x.Endereco).FirstOrDefault(x => x.Id == id);

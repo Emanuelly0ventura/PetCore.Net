@@ -1,5 +1,10 @@
 using PetCore.Exceptions;
 using PetCore.Extensions;
+using PetCore.Filters;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,7 +36,22 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddControllers(options => options.Filters.Add<PaginationHateoasFilter>());
+var jwtKey = builder.Configuration["Jwt:Key"] ?? (builder.Environment.IsEnvironment("Testing") ? "test-only-signing-key-with-32-bytes-minimum" : null);
+if (Encoding.UTF8.GetByteCount(jwtKey ?? string.Empty) < 32)
+    throw new InvalidOperationException("Configure Jwt:Key com pelo menos 32 bytes via variável de ambiente Jwt__Key.");
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true, ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidateAudience = true, ValidAudience = builder.Configuration["Jwt:Audience"],
+        ValidateIssuerSigningKey = true, IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey!)),
+        ValidateLifetime = true, ClockSkew = TimeSpan.FromSeconds(30)
+    };
+});
+builder.Services.AddAuthorization(options => options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build());
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -74,17 +94,18 @@ app.UseApiMetrics();
 
 app.UseExceptionHandler();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 app.MapHealthChecks("/health/live", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
 {
     Predicate = _ => false
-});
+}).AllowAnonymous();
 app.MapHealthChecks("/health/ready", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
 {
     Predicate = check => check.Tags.Contains("ready")
-});
+}).AllowAnonymous();
 app.UseOpenTelemetryPrometheusScrapingEndpoint("/metrics");
 
 app.Run();
@@ -93,3 +114,7 @@ app.Run();
 /// 
 /// </summary>
 public partial class Program;
+
+
+
+

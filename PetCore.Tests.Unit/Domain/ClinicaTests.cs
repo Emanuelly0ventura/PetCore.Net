@@ -1,4 +1,5 @@
 using PetCore.Domain.Entities;
+using PetCore.Domain.Exceptions;
 using Xunit;
 
 namespace PetCore.Tests.Unit.Domain;
@@ -28,6 +29,6 @@ public class ClinicaTests
         var action = () => clinica.UpdateEndereco(Guid.Empty);
 
         // Assert
-        Assert.Throws<Exception>(action);
+        Assert.Throws<DomainValidationException>(action);
     }
 }

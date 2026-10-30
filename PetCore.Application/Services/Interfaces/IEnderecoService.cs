@@ -5,6 +5,7 @@ namespace PetCore.Application.Services.Interfaces;
 public interface IEnderecoService
 {
     IReadOnlyCollection<EnderecoResponse> FetchAll();
+    PagedData<EnderecoResponse> FetchPage(PageQuery query);
     
     EnderecoResponse? FetchById(Guid id);
     

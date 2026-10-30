@@ -1,3 +1,4 @@
+using PetCore.Domain.Exceptions;
 using PetCore.Domain.Enums;
 
 namespace PetCore.Domain.Entities;
@@ -29,31 +30,31 @@ public class Pet
     {
         
         if (string.IsNullOrWhiteSpace(nome))
-            throw new Exception("Nome está vazia");
+            throw new DomainValidationException("Nome está vazia");
         Nome = nome.Trim();
         
         if (string.IsNullOrWhiteSpace(especie))
-            throw new Exception("Especie está vazia");
+            throw new DomainValidationException("Especie está vazia");
         Especie = especie.Trim();
         
         if (string.IsNullOrWhiteSpace(raca))
-            throw new Exception("Raça está vazia");
+            throw new DomainValidationException("Raça está vazia");
         Raca = raca.Trim();
 
         if (dataNasc == default || dataNasc > DateOnly.FromDateTime(DateTime.UtcNow))
-            throw new Exception("Data de nascimento do Pet inválida");
+            throw new DomainValidationException("Data de nascimento do Pet inválida");
         DataNasc = dataNasc;
         
         if (string.IsNullOrWhiteSpace(pelagem))
-            throw new Exception("Pelagem está vazia");
+            throw new DomainValidationException("Pelagem está vazia");
         Pelagem = pelagem.Trim();
         
         if (string.IsNullOrWhiteSpace(porte))
-            throw new Exception("Porte está vazia");
+            throw new DomainValidationException("Porte está vazia");
         Porte = porte.Trim();
         
         if (!Enum.IsDefined(sexo))
-            throw new Exception("Sexo está vazio");
+            throw new DomainValidationException("Sexo está vazio");
         Sexo = sexo;
         
         Status = status;
@@ -89,7 +90,7 @@ public class Pet
     public void updateUrlImg(string urlImg)
     {
         if (string.IsNullOrWhiteSpace(urlImg))
-            throw new Exception("UrlImg está vazia");
+            throw new DomainValidationException("UrlImg está vazia");
         UrlImg = urlImg.Trim();
     }
 

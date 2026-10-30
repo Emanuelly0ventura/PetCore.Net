@@ -5,6 +5,7 @@ namespace PetCore.Application.Services.Interfaces;
 public interface IProtocoloService
 {
     IReadOnlyCollection<ProtocoloResponse> FetchAll();
+    PagedData<ProtocoloResponse> FetchPage(PageQuery query);
     ProtocoloResponse? FetchById(string id);
     ProtocoloResponse Create(ProtocoloRequest request);
     ProtocoloResponse? Patch(string id, ProtocoloDadosRequest request);

@@ -5,6 +5,7 @@ namespace PetCore.Application.Services.Interfaces;
 public interface IExameService
 {
     IReadOnlyCollection<ExameResponse> FetchAll();
+    PagedData<ExameResponse> FetchPage(PageQuery query);
     
     ExameResponse? FetchById(Guid id);
     

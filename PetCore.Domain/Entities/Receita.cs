@@ -1,3 +1,4 @@
+using PetCore.Domain.Exceptions;
 using PetCore.Domain.Commons;
 
 namespace PetCore.Domain.Entities;
@@ -31,19 +32,19 @@ public class Receita : DocumentoBase
         string? veterinarioNome = null, string? arquivoReceita = null, DateTime? dataEnvio = null)
     {
         if (string.IsNullOrEmpty(nome))
-            throw new Exception("Nome está vazio");
+            throw new DomainValidationException("Nome está vazio");
         Nome = nome;
 
-        if (validade.HasValue && validade.Value < DateOnly.FromDateTime(DateTime.UtcNow)) throw new Exception("Validade inválida");
+        if (validade.HasValue && validade.Value < DateOnly.FromDateTime(DateTime.UtcNow)) throw new DomainValidationException("Validade inválida");
         Validade = validade;
         
         if (idMedicoResponsavel == Guid.Empty)
-            throw new Exception("Id do Médico está vazio");
+            throw new DomainValidationException("Id do Médico está vazio");
         IdMedicoResponsavel = idMedicoResponsavel;
 
-        if (idProntuario == Guid.Empty) throw new Exception("Id do Prontuário inválido");
+        if (idProntuario == Guid.Empty) throw new DomainValidationException("Id do Prontuário inválido");
         IdProntuario = idProntuario;
-        if (petId == Guid.Empty || tutorId == Guid.Empty) throw new Exception("Pet/tutor inválidos");
+        if (petId == Guid.Empty || tutorId == Guid.Empty) throw new DomainValidationException("Pet/tutor inválidos");
         PetId = petId; TutorId = tutorId; PetNome = petNome?.Trim() ?? string.Empty;
         TutorNome = tutorNome?.Trim() ?? string.Empty; VeterinarioNome = veterinarioNome?.Trim() ?? string.Empty;
         ArquivoReceita = arquivoReceita?.Trim() ?? string.Empty; DataEnvio = dataEnvio;

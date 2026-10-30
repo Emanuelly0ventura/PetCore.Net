@@ -5,6 +5,7 @@ namespace PetCore.Application.Services.Interfaces;
 public interface ITutorService
 {
     IReadOnlyCollection<TutorResponse> FetchAll();
+    PagedData<TutorResponse> FetchPage(PageQuery query);
     
     TutorResponse? FetchById(Guid id);
     

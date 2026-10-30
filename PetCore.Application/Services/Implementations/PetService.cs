@@ -23,6 +23,18 @@ public class PetService(IPetRepository petRepository,
             .ToList();
     }
     
+    public PagedData<PetResponse> FetchPage(PageQuery query)
+    {
+        var page = petRepository.FetchPage(query);
+        return new PagedData<PetResponse>(page.Items.Select(item => new PetResponse(item)).ToList(), page.Page, page.PageSize, page.TotalItems, page.TotalPages);
+    }
+
+    public PagedData<PetMenuResponse> FetchMenuPage(PageQuery query)
+    {
+        var page = petRepository.FetchMenuPage(query);
+        return new PagedData<PetMenuResponse>(page.Items.Select(item => new PetMenuResponse(item)).ToList(), page.Page, page.PageSize, page.TotalItems, page.TotalPages);
+    }
+
     public PetResponse? FetchById(Guid id)
     {
         var pet = petRepository.FetchById(id);

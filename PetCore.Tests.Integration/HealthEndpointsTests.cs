@@ -41,6 +41,7 @@ public class HealthEndpointsTests(PetCoreApiFactory factory)
         var response = await client.GetAsync("/api/recurso-inexistente");
 
         // Assert
-        Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
     }
 }
+

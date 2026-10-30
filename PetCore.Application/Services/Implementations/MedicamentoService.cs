@@ -13,6 +13,12 @@ public class MedicamentoService(IMedicamentoRepository medicamentoRepository) : 
             .ToList();
     }
     
+    public PagedData<MedicamentoResponse> FetchPage(PageQuery query)
+    {
+        var page = medicamentoRepository.FetchPage(query);
+        return new PagedData<MedicamentoResponse>(page.Items.Select(item => new MedicamentoResponse(item)).ToList(), page.Page, page.PageSize, page.TotalItems, page.TotalPages);
+    }
+
     public MedicamentoResponse? FetchById(Guid id)
     {
         var med = medicamentoRepository.FetchById(id);
@@ -45,7 +51,7 @@ public class MedicamentoService(IMedicamentoRepository medicamentoRepository) : 
 
         if (!string.IsNullOrWhiteSpace(medcRequest.Instrucao))
         {
-            rel.UpdateDosagem(medcRequest.Instrucao);
+            rel.UpdateInstrucao(medcRequest.Instrucao);
             changed = true;
         }
         

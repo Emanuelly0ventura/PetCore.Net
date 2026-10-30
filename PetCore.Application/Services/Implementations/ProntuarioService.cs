@@ -15,6 +15,12 @@ public class ProntuarioService(IProntuarioRepository prontuarioRepository,
             .ToList();
     }
     
+    public PagedData<ProntuarioResponse> FetchPage(PageQuery query)
+    {
+        var page = prontuarioRepository.FetchPage(query);
+        return new PagedData<ProntuarioResponse>(page.Items.Select(item => new ProntuarioResponse(item)).ToList(), page.Page, page.PageSize, page.TotalItems, page.TotalPages);
+    }
+
     public ProntuarioResponse? FetchById(Guid id)
     {
         var pront = prontuarioRepository.FetchById(id);

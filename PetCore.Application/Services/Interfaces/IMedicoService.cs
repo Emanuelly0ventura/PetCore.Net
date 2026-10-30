@@ -5,6 +5,7 @@ namespace PetCore.Application.Services.Interfaces;
 public interface IMedicoService
 {
     IReadOnlyCollection<MedicoResponse> FetchAll();
+    PagedData<MedicoResponse> FetchPage(PageQuery query);
     
     MedicoResponse? FetchById(Guid id);
     

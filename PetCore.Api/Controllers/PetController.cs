@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using PetCore.Authentication;
 using PetCore.Application.DTOs;
 using PetCore.Application.Services.Interfaces;
+using PetCore.Extensions;
 
 namespace PetCore.Controllers;
 
+[Authorize]
 [Produces("application/json")]
 [Route("api/[controller]")]
 [ApiController]
@@ -15,9 +19,9 @@ public class PetController(IPetService petService) : ControllerBase
     /// <response code="200">Registros retornados com sucesso.</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult FetchAll([FromQuery] Guid? tutorId = null)
+    public IActionResult FetchAll([FromQuery] PaginationOptions pagination, [FromQuery] Guid? tutorId = null)
     {
-        return Ok(petService.FetchAll(tutorId));
+        return Ok(petService.FetchPage(pagination.ToPageQuery(Request.Query)));
     }
     
     /// <summary>
@@ -26,9 +30,9 @@ public class PetController(IPetService petService) : ControllerBase
     /// <response code="200">Registros retornados com sucesso.</response>
     [HttpGet("menu")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult FetchMenuAll()
+    public IActionResult FetchMenuAll([FromQuery] PaginationOptions pagination)
     {
-        return Ok(petService.FetchMenuAll());
+        return Ok(petService.FetchMenuPage(pagination.ToPageQuery(Request.Query)));
     }
 
     /// <summary>
@@ -68,6 +72,7 @@ public class PetController(IPetService petService) : ControllerBase
     /// <param name="request">Nova nota da avaliação.</param>
     /// <response code="200">Nota atualizada com sucesso.</response>
     /// <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+    [HttpPatch("{id:guid}")]
     [HttpPut("{id:guid}/patch")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -92,3 +97,6 @@ public class PetController(IPetService petService) : ControllerBase
         return deleted ? NoContent() : NotFound();
     }
 }
+
+
+

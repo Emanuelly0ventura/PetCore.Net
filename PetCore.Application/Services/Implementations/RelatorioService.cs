@@ -14,6 +14,12 @@ public class RelatorioService(IRelatorioRepository relatorioRepository,
             .ToList();
     }
     
+    public PagedData<RelatorioResponse> FetchPage(PageQuery query)
+    {
+        var page = relatorioRepository.FetchPage(query);
+        return new PagedData<RelatorioResponse>(page.Items.Select(item => new RelatorioResponse(item)).ToList(), page.Page, page.PageSize, page.TotalItems, page.TotalPages);
+    }
+
     public RelatorioResponse? FetchById(Guid id)
     {
         var content = relatorioRepository.FetchById(id);

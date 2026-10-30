@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using PetCore.Application.Interfaces;
 using PetCore.Application.Services.Implementations;
 using PetCore.Application.Services.Interfaces;
+using PetCore.Application.Security;
 using PetCore.Infrastructure.Persistence;
 using PetCore.Infrastructure.Repositories;
 using MongoDB.Driver;
@@ -25,6 +26,7 @@ public static class PersistenceExtensions
         services.AddScoped<IReceitaService, ReceitaService>();
         services.AddScoped<IRelatorioService, RelatorioService>();
         services.AddScoped<ITutorService, TutorService>();
+        services.AddSingleton<IPasswordHashService, Pbkdf2PasswordHashService>();
 
         return services;
     }
@@ -72,10 +74,11 @@ public static class PersistenceExtensions
             if (string.IsNullOrWhiteSpace(connectionString))
             {
                 throw new InvalidOperationException(
-                    "A conexão PostgreSQL não foi configurada. Defina ConnectionStrings__DefaultConnection.");
+                    "A conexão SQL Server não foi configurada. Defina ConnectionStrings__DefaultConnection.");
             }
-            options.UseNpgsql(connectionString);
+            options.UseSqlServer(connectionString);
         });
         return services;
     }
 }
+

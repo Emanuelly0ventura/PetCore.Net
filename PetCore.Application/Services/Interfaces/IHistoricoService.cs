@@ -5,6 +5,7 @@ namespace PetCore.Application.Services.Interfaces;
 public interface IHistoricoService
 {
     IReadOnlyCollection<HistoricoResponse> FetchAll();
+    PagedData<HistoricoResponse> FetchPage(PageQuery query);
     
     HistoricoResponse? FetchById(Guid id);
     

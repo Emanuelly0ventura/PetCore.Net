@@ -6,12 +6,9 @@ namespace PetCore.Infrastructure.Repositories;
 
 public class TutorRepository (PetCoreContext context) : Repository<Tutor>(context), ITutorRepository
 {
-    public Tutor? FetchByEmail(string email, string senha)
+    public Tutor? FetchByEmail(string email)
     {
-        return context.Set<Tutor>()
-            .FirstOrDefault(x =>
-                x.Email == email &&
-                x.Senha == senha);
+        return context.Set<Tutor>().FirstOrDefault(x => x.Email == email);
     }
 
     public IReadOnlyCollection<Tutor> FetchAllById(List<Guid> ids)

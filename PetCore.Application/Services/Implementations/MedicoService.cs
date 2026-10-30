@@ -1,10 +1,11 @@
 using PetCore.Application.DTOs;
 using PetCore.Application.Interfaces;
 using PetCore.Application.Services.Interfaces;
+using PetCore.Application.Security;
 
 namespace PetCore.Application.Services.Implementations;
 
-public class MedicoService(IMedicoRepository medicoRepository) : IMedicoService
+public class MedicoService(IMedicoRepository medicoRepository, IPasswordHashService passwordHasher) : IMedicoService
 {
         public IReadOnlyCollection<MedicoResponse> FetchAll()
     {
@@ -13,6 +14,12 @@ public class MedicoService(IMedicoRepository medicoRepository) : IMedicoService
             .ToList();
     }
     
+    public PagedData<MedicoResponse> FetchPage(PageQuery query)
+    {
+        var page = medicoRepository.FetchPage(query);
+        return new PagedData<MedicoResponse>(page.Items.Select(item => new MedicoResponse(item)).ToList(), page.Page, page.PageSize, page.TotalItems, page.TotalPages);
+    }
+
     public MedicoResponse? FetchById(Guid id)
     {
         var med = medicoRepository.FetchById(id);
@@ -23,6 +30,7 @@ public class MedicoService(IMedicoRepository medicoRepository) : IMedicoService
     public MedicoResponse Create(MedicoRequest medicoRequest)
     {
         var med = medicoRequest.ToDomain();
+        med.UpdateSenha(passwordHasher.Hash(med.Senha));
         medicoRepository.Create(med);
         medicoRepository.SaveChanges();
 
@@ -67,7 +75,7 @@ public class MedicoService(IMedicoRepository medicoRepository) : IMedicoService
         
         if (!string.IsNullOrWhiteSpace(userRequest.Senha))
         {
-            med.UpdateSenha(userRequest.Senha);
+            med.UpdateSenha(passwordHasher.Hash(userRequest.Senha));
             changed = true;
         }
         
@@ -100,9 +108,17 @@ public class MedicoService(IMedicoRepository medicoRepository) : IMedicoService
 
     public MedicoResponse? FetchByEmail(string email, string senha)
     {
-        var med = medicoRepository.FetchAll()
-            .FirstOrDefault(t => t.Email == email && t.Senha == senha);
+        var medico = medicoRepository.FetchByEmail(email);
+        if (medico is null || !passwordHasher.Verify(senha, medico.Senha))
+            return null;
 
-        return med is null ? null : new MedicoResponse(med);
+        if (!passwordHasher.IsHash(medico.Senha))
+        {
+            medico.UpdateSenha(passwordHasher.Hash(senha));
+            medicoRepository.Patch(medico);
+            medicoRepository.SaveChanges();
+        }
+
+        return new MedicoResponse(medico);
     }
 }

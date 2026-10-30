@@ -4,7 +4,16 @@
         <name>PetCore.Api</name>
     </assembly>
     <members>
-        <member name="M:PetCore.Controllers.ClinicaController.FetchAll">
+        <member name="P:PetCore.Authentication.PaginationOptions.Page">
+            <example>1</example>
+        </member>
+        <member name="P:PetCore.Authentication.PaginationOptions.PageSize">
+            <example>20</example>
+        </member>
+        <member name="P:PetCore.Authentication.PaginationOptions.SortBy">
+            <example>Nome</example>
+        </member>
+        <member name="M:PetCore.Controllers.ClinicaController.FetchAll(PetCore.Authentication.PaginationOptions)">
             <summary>
             Lista todos os registros.
             </summary>
@@ -43,7 +52,7 @@
             <response code="204">Registro excluído com sucesso.</response>
             <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
         </member>
-        <member name="M:PetCore.Controllers.EnderecoController.FetchAll">
+        <member name="M:PetCore.Controllers.EnderecoController.FetchAll(PetCore.Authentication.PaginationOptions)">
             <summary>
             Lista todos os registros.
             </summary>
@@ -82,7 +91,7 @@
             <response code="204">Registro excluído com sucesso.</response>
             <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
         </member>
-        <member name="M:PetCore.Controllers.ExameController.FetchAll">
+        <member name="M:PetCore.Controllers.ExameController.FetchAll(PetCore.Authentication.PaginationOptions)">
             <summary>
             Lista todos os registros.
             </summary>
@@ -121,7 +130,7 @@
             <response code="204">Registro excluído com sucesso.</response>
             <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
         </member>
-        <member name="M:PetCore.Controllers.HistoricoController.FetchAll">
+        <member name="M:PetCore.Controllers.HistoricoController.FetchAll(PetCore.Authentication.PaginationOptions)">
             <summary>
             Lista todos os registros.
             </summary>
@@ -151,7 +160,7 @@
             <response code="204">Registro excluído com sucesso.</response>
             <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
         </member>
-        <member name="M:PetCore.Controllers.MedicamentoController.FetchAll">
+        <member name="M:PetCore.Controllers.MedicamentoController.FetchAll(PetCore.Authentication.PaginationOptions)">
             <summary>
             Lista todos os registros.
             </summary>
@@ -190,7 +199,7 @@
             <response code="204">Registro excluído com sucesso.</response>
             <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
         </member>
-        <member name="M:PetCore.Controllers.MedicoController.FetchAll">
+        <member name="M:PetCore.Controllers.MedicoController.FetchAll(PetCore.Authentication.PaginationOptions)">
             <summary>
             Lista todos os registros.
             </summary>
@@ -229,22 +238,13 @@
             <response code="204">Registro excluído com sucesso.</response>
             <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
         </member>
-        <member name="M:PetCore.Controllers.MedicoController.FetchByEmail(System.String,System.String)">
-            <summary>
-            Busca um tutor por email e senha.
-            </summary>
-            <param name="email">Email do tutor.</param>
-            <param name="senha">Senha do tutor.</param>
-            <response code="200">Tutor encontrado com sucesso.</response>
-            <response code="404">Nenhum tutor encontrado com as credenciais informadas.</response>
-        </member>
-        <member name="M:PetCore.Controllers.PetController.FetchAll(System.Nullable{System.Guid})">
+        <member name="M:PetCore.Controllers.PetController.FetchAll(PetCore.Authentication.PaginationOptions,System.Nullable{System.Guid})">
             <summary>
             Lista todos os registros.
             </summary>
             <response code="200">Registros retornados com sucesso.</response>
         </member>
-        <member name="M:PetCore.Controllers.PetController.FetchMenuAll">
+        <member name="M:PetCore.Controllers.PetController.FetchMenuAll(PetCore.Authentication.PaginationOptions)">
             <summary>
             Lista todos os registros.
             </summary>
@@ -283,7 +283,7 @@
             <response code="204">Registro excluído com sucesso.</response>
             <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
         </member>
-        <member name="M:PetCore.Controllers.ProntuarioController.FetchAll">
+        <member name="M:PetCore.Controllers.ProntuarioController.FetchAll(PetCore.Authentication.PaginationOptions)">
             <summary>
             Lista todos os registros.
             </summary>
@@ -322,7 +322,7 @@
             <response code="204">Registro excluído com sucesso.</response>
             <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
         </member>
-        <member name="M:PetCore.Controllers.ReceitaController.FetchAll">
+        <member name="M:PetCore.Controllers.ReceitaController.FetchAll(PetCore.Authentication.PaginationOptions)">
             <summary>
             Lista todos os registros.
             </summary>
@@ -352,7 +352,7 @@
             <response code="204">Registro excluído com sucesso.</response>
             <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
         </member>
-        <member name="M:PetCore.Controllers.RelatorioController.FetchAll">
+        <member name="M:PetCore.Controllers.RelatorioController.FetchAll(PetCore.Authentication.PaginationOptions)">
             <summary>
             Lista todos os registros.
             </summary>
@@ -391,7 +391,7 @@
             <response code="204">Registro excluído com sucesso.</response>
             <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
         </member>
-        <member name="M:PetCore.Controllers.TutorController.FetchAll">
+        <member name="M:PetCore.Controllers.TutorController.FetchAll(PetCore.Authentication.PaginationOptions)">
             <summary>
             Lista todos os registros.
             </summary>
@@ -430,20 +430,8 @@
             <response code="204">Registro excluído com sucesso.</response>
             <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
         </member>
-        <member name="M:PetCore.Controllers.TutorController.FetchByEmail(System.String,System.String)">
-            <summary>
-            Busca um tutor por email e senha.
-            </summary>
-            <param name="email">Email do tutor.</param>
-            <param name="senha">Senha do tutor.</param>
-            <response code="200">Tutor encontrado com sucesso.</response>
-            <response code="404">Nenhum tutor encontrado com as credenciais informadas.</response>
-        </member>
         <member name="T:PetCoreContextFactory">
-            <summary>
-            Creates the PostgreSQL context for EF Core tooling without starting the API
-            or requiring its MongoDB configuration.
-            </summary>
+            <summary>Creates a SQL Server context for EF Core tooling.</summary>
         </member>
         <member name="T:Program">
             <summary>

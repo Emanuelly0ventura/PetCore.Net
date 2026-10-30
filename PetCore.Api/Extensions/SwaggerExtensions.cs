@@ -9,6 +9,8 @@ public static class SwaggerExtensions
         {
            return services.AddSwaggerGen(options =>
             {
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme { Name = "Authorization", Type = SecuritySchemeType.Http, Scheme = "bearer", BearerFormat = "JWT", In = ParameterLocation.Header, Description = "Informe o token JWT." });
+                options.AddSecurityRequirement(document => new OpenApiSecurityRequirement { [new OpenApiSecuritySchemeReference("Bearer", document, null)] = new List<string>() });
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "PetCore API",
@@ -34,3 +36,6 @@ public static class SwaggerExtensions
             });
         }
 }
+
+
+

@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using PetCore.Authentication;
 using PetCore.Application.DTOs;
 using PetCore.Application.Services.Interfaces;
+using PetCore.Extensions;
 
 namespace PetCore.Controllers;
 
+[Authorize]
 [Produces("application/json")]
 [Route("api/[controller]")]
 [ApiController]
@@ -15,9 +19,9 @@ public class ClinicaController(IClinicaService clinicaService) : ControllerBase
     /// <response code="200">Registros retornados com sucesso.</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult FetchAll()
+    public IActionResult FetchAll([FromQuery] PaginationOptions pagination)
     {
-        return Ok(clinicaService.FetchAll());
+        return Ok(clinicaService.FetchPage(pagination.ToPageQuery(Request.Query)));
     }
 
     /// <summary>
@@ -57,6 +61,7 @@ public class ClinicaController(IClinicaService clinicaService) : ControllerBase
     /// <param name="request">Nova nota da avaliação.</param>
     /// <response code="200">Nota atualizada com sucesso.</response>
     /// <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+    [HttpPatch("{id:guid}")]
     [HttpPut("{id:guid}/patch")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -81,3 +86,5 @@ public class ClinicaController(IClinicaService clinicaService) : ControllerBase
         return deleted ? NoContent() : NotFound();
     }
 }
+
+

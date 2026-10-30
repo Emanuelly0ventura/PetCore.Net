@@ -1,3 +1,4 @@
+using PetCore.Domain.Exceptions;
 namespace PetCore.Domain.Entities;
 
 public class Protocolo
@@ -29,8 +30,8 @@ public class Protocolo
     }
     public void Update(string titulo, string texto)
     {
-        if (string.IsNullOrWhiteSpace(titulo)) throw new Exception("Título do protocolo está vazio");
-        if (string.IsNullOrWhiteSpace(texto)) throw new Exception("Texto do protocolo está vazio");
+        if (string.IsNullOrWhiteSpace(titulo)) throw new DomainValidationException("Título do protocolo está vazio");
+        if (string.IsNullOrWhiteSpace(texto)) throw new DomainValidationException("Texto do protocolo está vazio");
         Titulo = titulo.Trim();
         Texto = texto.Trim();
     }

@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Api\\PetCore.Api.csproj": {}
+    "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Api\\PetCore.Api.csproj": {}
   },
   "projects": {
-    "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Api\\PetCore.Api.csproj": {
+    "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Api\\PetCore.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Api\\PetCore.Api.csproj",
+        "projectUniqueName": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Api\\PetCore.Api.csproj",
         "projectName": "PetCore.Api",
-        "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Api\\PetCore.Api.csproj",
+        "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Api\\PetCore.Api.csproj",
         "packagesPath": "C:\\Users\\ADM\\.nuget\\packages\\",
-        "outputPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Api\\obj\\",
+        "outputPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\NuGet.Config",
+          "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\NuGet.Config",
           "C:\\Users\\ADM\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
@@ -25,14 +25,13 @@
         },
         "frameworks": {
           "net10.0": {
-            "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Application\\PetCore.Application.csproj": {
-                "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Application\\PetCore.Application.csproj"
+              "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Application\\PetCore.Application.csproj": {
+                "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Application\\PetCore.Application.csproj"
               },
-              "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Infrastructure\\PetCore.Infrastructure.csproj": {
-                "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Infrastructure\\PetCore.Infrastructure.csproj"
+              "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Infrastructure\\PetCore.Infrastructure.csproj": {
+                "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Infrastructure\\PetCore.Infrastructure.csproj"
               }
             }
           }
@@ -51,38 +50,37 @@
       },
       "frameworks": {
         "net10.0": {
-          "framework": "net10.0",
           "targetAlias": "net10.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[10.0.8, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[10.0.7, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[10.0.4, )"
+              "version": "[10.0.5, )"
             },
             "Microsoft.EntityFrameworkCore.Abstractions": {
               "target": "Package",
-              "version": "[10.0.4, )"
+              "version": "[10.0.5, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[10.0.4, )"
+              "version": "[10.0.5, )"
             },
             "Microsoft.EntityFrameworkCore.Relational": {
               "target": "Package",
-              "version": "[10.0.4, )"
+              "version": "[10.0.5, )"
             },
             "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[10.0.4, )"
-            },
-            "MySqlConnector": {
-              "target": "Package",
-              "version": "[2.5.0, )"
+              "version": "[10.0.5, )"
             },
             "OpenTelemetry.Exporter.Prometheus.AspNetCore": {
               "target": "Package",
@@ -550,17 +548,17 @@
         }
       }
     },
-    "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Application\\PetCore.Application.csproj": {
+    "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Application\\PetCore.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Application\\PetCore.Application.csproj",
+        "projectUniqueName": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Application\\PetCore.Application.csproj",
         "projectName": "PetCore.Application",
-        "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Application\\PetCore.Application.csproj",
+        "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Application\\PetCore.Application.csproj",
         "packagesPath": "C:\\Users\\ADM\\.nuget\\packages\\",
-        "outputPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Application\\obj\\",
+        "outputPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Application\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\NuGet.Config",
+          "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\NuGet.Config",
           "C:\\Users\\ADM\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
@@ -571,11 +569,10 @@
         },
         "frameworks": {
           "net10.0": {
-            "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Domain\\PetCore.Domain.csproj": {
-                "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Domain\\PetCore.Domain.csproj"
+              "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Domain\\PetCore.Domain.csproj": {
+                "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Domain\\PetCore.Domain.csproj"
               }
             }
           }
@@ -594,7 +591,6 @@
       },
       "frameworks": {
         "net10.0": {
-          "framework": "net10.0",
           "targetAlias": "net10.0",
           "imports": [
             "net461",
@@ -890,17 +886,17 @@
         }
       }
     },
-    "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Domain\\PetCore.Domain.csproj": {
+    "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Domain\\PetCore.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Domain\\PetCore.Domain.csproj",
+        "projectUniqueName": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Domain\\PetCore.Domain.csproj",
         "projectName": "PetCore.Domain",
-        "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Domain\\PetCore.Domain.csproj",
+        "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Domain\\PetCore.Domain.csproj",
         "packagesPath": "C:\\Users\\ADM\\.nuget\\packages\\",
-        "outputPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Domain\\obj\\",
+        "outputPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\NuGet.Config",
+          "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\NuGet.Config",
           "C:\\Users\\ADM\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
@@ -911,7 +907,6 @@
         },
         "frameworks": {
           "net10.0": {
-            "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {}
           }
@@ -930,7 +925,6 @@
       },
       "frameworks": {
         "net10.0": {
-          "framework": "net10.0",
           "targetAlias": "net10.0",
           "imports": [
             "net461",
@@ -1226,17 +1220,17 @@
         }
       }
     },
-    "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Infrastructure\\PetCore.Infrastructure.csproj": {
+    "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Infrastructure\\PetCore.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Infrastructure\\PetCore.Infrastructure.csproj",
+        "projectUniqueName": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Infrastructure\\PetCore.Infrastructure.csproj",
         "projectName": "PetCore.Infrastructure",
-        "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Infrastructure\\PetCore.Infrastructure.csproj",
+        "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Infrastructure\\PetCore.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\ADM\\.nuget\\packages\\",
-        "outputPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Infrastructure\\obj\\",
+        "outputPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\NuGet.Config",
+          "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\NuGet.Config",
           "C:\\Users\\ADM\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
@@ -1247,14 +1241,13 @@
         },
         "frameworks": {
           "net10.0": {
-            "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Application\\PetCore.Application.csproj": {
-                "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Application\\PetCore.Application.csproj"
+              "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Application\\PetCore.Application.csproj": {
+                "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Application\\PetCore.Application.csproj"
               },
-              "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Domain\\PetCore.Domain.csproj": {
-                "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\C#\\PetCore.Net\\PetCore.Domain\\PetCore.Domain.csproj"
+              "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Domain\\PetCore.Domain.csproj": {
+                "projectPath": "C:\\Manu\\fiap\\fiap\\Challege\\Challenge_2ano\\sprint4\\DevOps\\PetCore.Net\\PetCore.Domain\\PetCore.Domain.csproj"
               }
             }
           }
@@ -1273,30 +1266,29 @@
       },
       "frameworks": {
         "net10.0": {
-          "framework": "net10.0",
           "targetAlias": "net10.0",
           "dependencies": {
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[10.0.4, )"
+              "version": "[10.0.5, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[10.0.4, )"
+              "version": "[10.0.5, )"
             },
             "Microsoft.EntityFrameworkCore.Relational": {
               "target": "Package",
-              "version": "[10.0.4, )"
+              "version": "[10.0.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[10.0.5, )"
             },
             "MongoDB.Driver": {
               "target": "Package",
               "version": "[3.4.3, )"
-            },
-            "Npgsql.EntityFrameworkCore.PostgreSQL": {
-              "target": "Package",
-              "version": "[10.0.3, )"
             }
           },
           "imports": [

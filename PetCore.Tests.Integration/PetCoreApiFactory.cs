@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using PetCore.Infrastructure.Persistence;
 
@@ -14,6 +15,12 @@ public sealed class PetCoreApiFactory : WebApplicationFactory<Program>
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
+builder.ConfigureAppConfiguration((_, configuration) => configuration.AddInMemoryCollection(new Dictionary<string, string?>
+{
+    ["Jwt:Key"] = "test-only-signing-key-with-32-bytes-minimum",
+    ["Jwt:Issuer"] = "PetCore",
+    ["Jwt:Audience"] = "PetCore.Client"
+}));
         builder.ConfigureServices(services =>
         {
             var descriptors = services.Where(descriptor =>
@@ -29,7 +36,7 @@ public sealed class PetCoreApiFactory : WebApplicationFactory<Program>
 
             services.PostConfigure<HealthCheckServiceOptions>(options =>
             {
-                foreach (var checkName in new[] { "mysql", "postgresql", "mongodb" })
+                foreach (var checkName in new[] { "mysql", "sqlserver", "postgresql", "mongodb" })
                 {
                     var databaseCheck = options.Registrations
                         .FirstOrDefault(registration => registration.Name == checkName);
@@ -44,3 +51,5 @@ public sealed class PetCoreApiFactory : WebApplicationFactory<Program>
         });
     }
 }
+
+

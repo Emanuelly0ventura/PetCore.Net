@@ -1,3 +1,4 @@
+using PetCore.Domain.Exceptions;
 namespace PetCore.Domain.Entities;
 
 public class Relatorio
@@ -32,13 +33,13 @@ public class Relatorio
     {
         UpdateObs(observacao);
 
-        if (idHistorico == Guid.Empty) throw new Exception("Id do histórico inválido");
+        if (idHistorico == Guid.Empty) throw new DomainValidationException("Id do histórico inválido");
         IdHistorico = idHistorico;
 
         if (idMedicoResponsavel == Guid.Empty)
-            throw new Exception("Id do Médico está vazio");
+            throw new DomainValidationException("Id do Médico está vazio");
         IdMedicoResponsavel = idMedicoResponsavel;
-        if (petId == Guid.Empty || tutorId == Guid.Empty) throw new Exception("Pet/tutor inválidos");
+        if (petId == Guid.Empty || tutorId == Guid.Empty) throw new DomainValidationException("Pet/tutor inválidos");
         PetId = petId; TutorId = tutorId; PetNome = petNome?.Trim() ?? string.Empty;
         TutorNome = tutorNome?.Trim() ?? string.Empty; ArquivoHistorico = arquivoHistorico?.Trim() ?? string.Empty;
         Prontuarios = prontuarios ?? string.Empty;
@@ -47,7 +48,7 @@ public class Relatorio
     public void UpdateObs(string observacao)
     {
         if (string.IsNullOrWhiteSpace(observacao))
-            throw new Exception("Observação está vazia");
+            throw new DomainValidationException("Observação está vazia");
 
         Observacao = observacao.Trim();
     }

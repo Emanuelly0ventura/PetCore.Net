@@ -16,6 +16,12 @@ public class HistoricoService(
             .ToList();
     }
     
+    public PagedData<HistoricoResponse> FetchPage(PageQuery query)
+    {
+        var page = historicoRepository.FetchPage(query);
+        return new PagedData<HistoricoResponse>(page.Items.Select(item => new HistoricoResponse(item)).ToList(), page.Page, page.PageSize, page.TotalItems, page.TotalPages);
+    }
+
     public HistoricoResponse? FetchById(Guid id)
     {
         var hist = historicoRepository.FetchById(id);

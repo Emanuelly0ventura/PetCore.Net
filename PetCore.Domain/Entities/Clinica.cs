@@ -1,3 +1,4 @@
+using PetCore.Domain.Exceptions;
 namespace PetCore.Domain.Entities;
 
 public class Clinica
@@ -21,7 +22,7 @@ public class Clinica
         UpdateNome(nome);
         
         if (string.IsNullOrWhiteSpace(cnpj))
-            throw new Exception("Cnpj está vazia");
+            throw new DomainValidationException("Cnpj está vazia");
         Cnpj = cnpj.Trim();
         
         UpdateEndereco(idEndereco);
@@ -36,14 +37,14 @@ public class Clinica
     public void UpdateNome(string nome)
     {
         if (string.IsNullOrWhiteSpace(nome))
-            throw new Exception("Nome está vazia");
+            throw new DomainValidationException("Nome está vazia");
         Nome = nome.Trim();
     }
 
     public void UpdateEndereco(Guid idEndereco)
     {
         if (idEndereco == Guid.Empty)
-            throw new Exception("Id do Endereco está vazio");
+            throw new DomainValidationException("Id do Endereco está vazio");
         IdEndereco = idEndereco;
     }
 }

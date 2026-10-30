@@ -1,3 +1,4 @@
+using PetCore.Domain.Exceptions;
 using PetCore.Domain.Commons;
 
 namespace PetCore.Domain.Entities;
@@ -17,7 +18,7 @@ public class Medicamento : DocumentoBase
     public Medicamento(string nome, string dosagem, string instrucao)
     {
         if (string.IsNullOrEmpty(nome))
-            throw new Exception("Nome está vazio");
+            throw new DomainValidationException("Nome está vazio");
         Nome = nome.Trim();
         
         UpdateDosagem(dosagem);
@@ -34,14 +35,14 @@ public class Medicamento : DocumentoBase
     public void UpdateDosagem(string dosagem)
     {
         if (string.IsNullOrEmpty(dosagem))
-            throw new Exception("Dosagem está vazio");
+            throw new DomainValidationException("Dosagem está vazio");
         Dosagem = dosagem.Trim();
     }
     
     public void UpdateInstrucao(string instrucao)
     {
         if (string.IsNullOrEmpty(instrucao))
-            throw new Exception("Instrucao está vazio");
+            throw new DomainValidationException("Instrucao está vazio");
         Instrucao = instrucao.Trim();    
     }
 }

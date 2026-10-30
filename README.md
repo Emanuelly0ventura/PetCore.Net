@@ -18,8 +18,33 @@ RM564555 - 2TDSPJ
 
 O **PetCore** é uma API REST desenvolvida em C# com ASP.NET Core para gerenciamento de informações veterinárias de pets, tutores, médicos, clínicas, prontuários, receitas, exames, medicamentos, históricos e relatórios.
 
-O projeto foi organizado em camadas, separando responsabilidades entre API, Application, Domain e Infrastructure. A persistência relacional é feita com Entity Framework Core e PostgreSQL; o recurso de históricos clínicos usa MongoDB por meio de um repositório dedicado.
+O projeto foi organizado em camadas, separando responsabilidades entre API, Application, Domain e Infrastructure. A persistência relacional usa SQL Server com Entity Framework Core e migrations; históricos clínicos são persistidos no MongoDB por um repositório dedicado.
 
+
+### Arquitetura
+
+```mermaid
+flowchart LR
+  Client[Cliente HTTP / Swagger] --> API[PetCore.Api
+Controllers, JWT, validação, observabilidade]
+  API --> App[PetCore.Application
+Serviços, DTOs, contratos]
+  App --> Domain[PetCore.Domain
+Entidades e regras de negócio]
+  API --> Infra[PetCore.Infrastructure
+EF Core, MongoDB, repositórios]
+  Infra --> SQL[(SQL Server)]
+  Infra --> Mongo[(MongoDB
+históricos)]
+```
+
+### Segurança e consultas
+
+- `POST /api/auth/login` recebe `{ "email": "...", "password": "...", "role": "tutor" }` ou `role: "medico"`; credenciais inválidas retornam 401.
+- Rotas dos controllers exigem JWT Bearer. Swagger inclui o botão **Authorize** para enviar o token.
+- Consultas de coleção aceitam `page` (padrão 1), `pageSize` (padrão 20, máximo 100), `sortBy` (nome da propriedade da resposta) e `descending=true`.
+- Filtros aceitam propriedades mapeadas da resposta; valores textuais usam busca parcial sem diferenciar maiúsculas/minúsculas e valores como datas, IDs, enums e booleanos usam comparação exata. As respostas de coleção contêm `items`, metadados de página e links `self`, `collection`, `previous` e `next`; consultas por ID incluem `self` e `collection`.
+- Filtros, ordenação, contagem e paginação são aplicados nos repositórios antes de materializar os resultados: EF Core executa as consultas no SQL Server e MongoDB aplica filtro, ordenação e limites na consulta da coleção.
 ## Solução Proposta
 
 A solução permite cadastrar e gerenciar os principais dados de uma clínica veterinária, oferecendo endpoints para criação, consulta, atualização e remoção de recursos.
@@ -57,9 +82,9 @@ O sistema contempla relacionamentos entre entidades, como:
 - C#
 - ASP.NET Core
 - Entity Framework Core
-- PostgreSQL
+- Microsoft SQL Server
 - MongoDB
-- Npgsql.EntityFrameworkCore.PostgreSQL
+- Microsoft.EntityFrameworkCore.SqlServer
 - MongoDB.Driver
 - Swagger / Swashbuckle
 - Arquitetura em camadas
@@ -73,15 +98,15 @@ O sistema contempla relacionamentos entre entidades, como:
 ### Health checks
 
 - `GET /health/live`: confirma que a API está em execução, sem dependências externas.
-- `GET /health/ready`: valida a conectividade do PostgreSQL, MongoDB e do serviço externo configurado.
+- `GET /health/ready`: valida a conectividade do SQL Server, MongoDB e do serviço externo configurado.
 
-Os recursos gerais continuam no **PostgreSQL** via EF Core. O recurso `Historico` usa a coleção MongoDB `historicos`. Para verificar um serviço externo, informe a URL no campo `ExternalServices:BaseUrl` de `PetCore.Api/appsettings.json`.
+Os recursos gerais usam **SQL Server** via EF Core. O recurso `Historico` usa a coleção MongoDB `historicos`. Para verificar um serviço externo, informe a URL no campo `ExternalServices:BaseUrl` de `PetCore.Api/appsettings.json`.
 
 ### Compatibilidade com o aplicativo mobile
 
 Os DTOs aceitam os campos do mobile (`nascimento`, `fotoUrl`, `genero`, `tutorId`, `comedouroStatus`, `dataConsulta`, `observacoes`, `tipoExame`, `arquivoSolicitacao`, `arquivoReceita`, `arquivoHistorico` e os dados de tutor/pet/veterinário). Os registros de prontuário, exame e receita guardam as referências de arquivos como texto; a API não faz upload de arquivos. Quando o mobile não envia vínculo clínico (`idMedico`, `idHistorico` ou `idProntuario`), os campos correspondentes podem ficar vazios no registro.
 
-As novas colunas e os campos opcionais estão na migration `AddMobilePetFields`. Para atualizar uma base PostgreSQL já existente, execute `dotnet ef database update --project PetCore.Infrastructure --startup-project PetCore.Api --context PetCoreContext` com `ConnectionStrings__DefaultConnection` apontando para a base desejada. A migration ainda não foi aplicada a nenhum banco por esta alteração.
+A migration inicial `InitialSqlServer` e as migrations seguintes estão em `PetCore.Infrastructure/Migrations`. As migrations PostgreSQL anteriores foram preservadas em `Migrations_PostgreSQL_Archive` como referência histórica. Aplique as migrations SQL Server com `dotnet ef database update --project PetCore.Infrastructure --startup-project PetCore.Api --context PetCoreContext`, usando a connection string `ConnectionStrings__DefaultConnection`.
 
 ### Logs, correlação e rastreabilidade
 
@@ -95,19 +120,18 @@ GET /metrics
 
 ## ✅ Testes automatizados
 
-Os testes estão organizados por responsabilidade e seguem explicitamente o padrão **AAA** (Arrange, Act, Assert):
+Os testes estão organizados por responsabilidade e seguem o padrão **AAA** (Arrange, Act, Assert). A suíte tem 59 testes unitários e 5 de integração. Coverlet gera `PetCore.Tests.Unit/coverage.cobertura.xml` e falha o comando se qualquer uma das camadas Domínio ou Application ficar abaixo de 60% de cobertura de linhas. Última medição: Domínio 80,42%, Application 74,94% e total 76,70%.
 
 - `PetCore.Tests.Unit`: testes de Domínio e Application com xUnit e Moq.
-- `PetCore.Tests.Integration`: testes HTTP com `WebApplicationFactory`, `CollectionFixture` compartilhada e banco EF Core InMemory, sem exigir MySQL local.
+- `PetCore.Tests.Integration`: testes HTTP com `WebApplicationFactory`, `CollectionFixture` compartilhada e banco EF Core InMemory, sem exigir SQL Server ou MongoDB local.
 
-Execute todos os testes na pasta `PetCore`:
+Execute todos os testes na pasta raiz da solução (`PetCore.Net`):
 
 ```bash
 dotnet test
 ```
 
-> A API atual não implementa middleware, esquema ou endpoints de autenticação. Para não alterar a lógica existente, os testes de integração validam os fluxos HTTP disponíveis (sucesso do health check e erro 404). Quando a autenticação for adicionada ao projeto, a mesma `PetCoreApiFactory` deverá ser usada para cobrir credenciais válidas e inválidas.
-
+A API usa JWT Bearer. O endpoint público `POST /api/auth/login` recebe `email`, `password` e `role` (`tutor` ou `medico`) e retorna `accessToken`; os controllers exigem `Authorization: Bearer <token>`. Senhas novas são armazenadas com hash PBKDF2; credenciais legadas são atualizadas para hash após um login válido. Os testes de integração cobrem login, proteção das rotas, paginação e HATEOAS.
 ## 📂 Estrutura do Projeto
 
 ```txt
@@ -150,15 +174,21 @@ PetCore
 
 ## Documentação das Rotas
 
+### Autenticação
+
+POST /api/auth/login
+
+Body JSON: `{ "email": "...", "password": "...", "role": "tutor" }` (ou `"medico"`). O endpoint retorna JWT Bearer. As rotas CRUD exigem token.
+
 ### Clínica
 
-GET /api/Clinica
+GET /api/Clinica?page=1&pageSize=20&sortBy=nome
 
 GET /api/Clinica/{id}
 
 POST /api/Clinica
 
-PUT /api/Clinica/{id}/patch
+PATCH /api/Clinica/{id} (compatibilidade: PUT /api/Clinica/{id}/patch)
 
 DELETE /api/Clinica/{id}
 
@@ -224,7 +254,6 @@ GET /api/Medico
 
 GET /api/Medico/{id}
 
-GET /api/Medico/login?email={email}&senha={senha}
 
 POST /api/Medico
 
@@ -236,15 +265,15 @@ DELETE /api/Medico/{id}
 
 ## Pet
 
-GET /api/Pet
+GET /api/Pet?page=1&pageSize=20&sortBy=nome
 
-GET /api/Pet/menu
+GET /api/Pet/menu?page=1&pageSize=20&sortBy=nome
 
 GET /api/Pet/{id}
 
 POST /api/Pet
 
-PUT /api/Pet/{id}/patch
+PATCH /api/Pet/{id} (compatibilidade: PUT /api/Pet/{id}/patch)
 
 DELETE /api/Pet/{id}
 
@@ -292,15 +321,14 @@ DELETE /api/Relatorio/{id}
 
 ## Tutor
 
-GET /api/Tutor
+GET /api/Tutor?page=1&pageSize=20&sortBy=nome
 
 GET /api/Tutor/{id}
 
-GET /api/Tutor/login?email={email}&senha={senha}
 
 POST /api/Tutor
 
-PUT /api/Tutor/{id}/patch
+PATCH /api/Tutor/{id} (compatibilidade: PUT /api/Tutor/{id}/patch)
 
 DELETE /api/Tutor/{id}
 
@@ -345,10 +373,12 @@ Siga os passos abaixo para configurar e executar a API PetCore localmente.
 Antes de iniciar, verifique se você possui instalado:
 
 - .NET SDK
-- PostgreSQL Server
+- SQL Server 2022 ou superior
 - MongoDB ou Docker Desktop
 - Visual Studio, Rider ou VS Code
 - Ferramenta do Entity Framework Core
+
+Para instalar/atualizar a ferramenta EF Core compatível com o projeto: `dotnet tool update --global dotnet-ef --version 10.0.5`.
 
 Para verificar se o .NET está instalado:
 
@@ -360,7 +390,7 @@ dotnet --version
 ### 2. Acessar a Pasta Raiz da Solução
 
 ```bash
-cd PetCore
+cd PetCore.Net
 ```
 
 ---
@@ -383,16 +413,35 @@ No arquivo:
 PetCore.Api/appsettings.json
 ```
 
-configure as conexões PostgreSQL e MongoDB. Use variáveis de ambiente em ambientes compartilhados ou de deploy.
+Para desenvolvimento local, configure as conexões SQL Server e MongoDB nesse arquivo sem versionar credenciais. Em ambientes compartilhados, como o Render, use variáveis de ambiente conforme as instruções abaixo. Defina também `Jwt__Key` com um segredo aleatório de pelo menos 32 bytes, `Jwt__Issuer` e `Jwt__Audience`.
 
-#### PostgreSQL:
+#### Configuração no Render (deploy Docker)
 
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Port=5432;Database=petcore;Username=postgres;Password=sua_senha"
-  }
-}
+No painel do Render, abra o serviço Web da API e acesse **Environment**. Cadastre as variáveis abaixo em **Environment Variables**. Os valores são fornecidos pelo responsável pelo banco/ambiente; não os coloque no Dockerfile, no `appsettings.json` versionado ou em commits.
+
+| Variável | Valor |
+| --- | --- |
+| `ConnectionStrings__DefaultConnection` | Connection string completa do SQL Server disponibilizada para o ambiente (Render) |
+| `ConnectionStrings__MongoDb` | URI de conexão do MongoDB usado pela API |
+| `Jwt__Key` | Segredo aleatório com pelo menos 32 bytes |
+| `Jwt__Issuer` | Emissor configurado para o JWT (por exemplo, `PetCore`) |
+| `Jwt__Audience` | Público configurado para o JWT (por exemplo, `PetCore.Client`) |
+
+O ASP.NET Core converte `__` em `:` na configuração: `ConnectionStrings__DefaultConnection` corresponde a `ConnectionStrings:DefaultConnection`. Após salvar as variáveis, faça um novo deploy/restart do serviço. O Dockerfile apenas publica e inicia a aplicação; ele não define nem precisa conter as credenciais do banco. A API encerra a inicialização com uma mensagem clara se `ConnectionStrings__DefaultConnection`, `ConnectionStrings__MongoDb` ou `Jwt__Key` não estiver configurada.
+
+#### SQL Server:
+
+Defina `ConnectionStrings__DefaultConnection` (exemplo PowerShell):
+
+```powershell
+$env:ConnectionStrings__DefaultConnection = "Server=localhost;Database=PetCore;User Id=sa;Password=<senha-forte>;TrustServerCertificate=True;MultipleActiveResultSets=true"
+$rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+$bytes = New-Object byte[] 48
+$rng.GetBytes($bytes)
+$env:Jwt__Key = [Convert]::ToBase64String($bytes)
+$rng.Dispose()
+$env:Jwt__Issuer = "PetCore"
+$env:Jwt__Audience = "PetCore.Client"
 ```
 
 #### MongoDB local (Docker Desktop):
@@ -409,7 +458,7 @@ configure as conexões PostgreSQL e MongoDB. Use variáveis de ambiente em ambie
 
 ### 5. Aplicar as Migrations
 
-Com o PostgreSQL em execução, aplique as migrations para criar as tabelas do banco de dados:
+Com o SQL Server em execução e a connection string definida, aplique as migrations para criar as tabelas do banco de dados:
 
 ```bash
 dotnet ef database update --project PetCore.Infrastructure --startup-project PetCore.Api --context PetCoreContext
@@ -417,13 +466,13 @@ dotnet ef database update --project PetCore.Infrastructure --startup-project Pet
 
 #### Alternativa com Script SQL
 
-Caso não seja possível conectar ao banco no momento, o projeto possui um script SQL gerado a partir da migration:
+Script SQL Server idempotente gerado a partir da migration:
 
 ```bash
-petcore-migration.sql
+PetCore.Infrastructure/Migrations/InitialSqlServer.sql
 ```
 
-Esse script pode ser executado manualmente no PostgreSQL.
+O script idempotente foi gerado para SQL Server. Conforme informado, as migrations foram aplicadas ao banco de produção hospedado no Render. Para novos ambientes, configure a connection string por variável de ambiente antes de aplicar as migrations.
 
 Para iniciar somente o MongoDB local com o Docker Desktop, execute:
 
@@ -484,3 +533,11 @@ https://petcore-net.onrender.com
 
 
 ---
+
+
+
+
+
+
+
+

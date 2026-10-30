@@ -1,3 +1,4 @@
+using PetCore.Domain.Exceptions;
 namespace PetCore.Domain.Entities;
 
 public class Prontuario
@@ -37,17 +38,17 @@ public class Prontuario
         decimal? temperatura = null, decimal? peso = null, string? tratamento = null)
     {
         if (dataEmissao.Year > DateTime.Now.Year || dataEmissao.Equals(null))
-            throw new Exception("Data de emissão inválida");
+            throw new DomainValidationException("Data de emissão inválida");
         DataEmissao = dataEmissao;
 
         UpdateDesc(descricao);
         
-        if (idMedico == Guid.Empty) throw new Exception("Id do Médico inválido");
+        if (idMedico == Guid.Empty) throw new DomainValidationException("Id do Médico inválido");
         IdMedico = idMedico;
         
-        if (idHistorico == Guid.Empty) throw new Exception("Id do Histórico inválido");
+        if (idHistorico == Guid.Empty) throw new DomainValidationException("Id do Histórico inválido");
         IdHistorico = idHistorico;
-        if (petId == Guid.Empty || tutorId == Guid.Empty) throw new Exception("Pet/tutor inválidos");
+        if (petId == Guid.Empty || tutorId == Guid.Empty) throw new DomainValidationException("Pet/tutor inválidos");
         PetId = petId; TutorId = tutorId; PetNome = petNome?.Trim() ?? string.Empty; TutorNome = tutorNome?.Trim() ?? string.Empty;
         Temperatura = temperatura; Peso = peso; Tratamento = tratamento?.Trim() ?? string.Empty;
     }
@@ -55,7 +56,7 @@ public class Prontuario
     public void UpdateDesc(string descricao)
     {
         if (string.IsNullOrWhiteSpace(descricao))
-            throw new Exception("Descrição está vazia");
+            throw new DomainValidationException("Descrição está vazia");
         Descricao = descricao.Trim();
     }
 

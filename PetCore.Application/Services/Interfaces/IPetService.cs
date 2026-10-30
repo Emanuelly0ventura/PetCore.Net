@@ -11,8 +11,10 @@ public interface IPetService
     bool Delete(Guid id);
     
     IReadOnlyCollection<PetResponse> FetchAll(Guid? tutorId = null);
+    PagedData<PetResponse> FetchPage(PageQuery query);
     
     IReadOnlyCollection<PetMenuResponse> FetchMenuAll();
+    PagedData<PetMenuResponse> FetchMenuPage(PageQuery query);
     
     PetResponse? FetchById(Guid id);
 }

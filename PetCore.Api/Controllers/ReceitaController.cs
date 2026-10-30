@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using PetCore.Authentication;
 using PetCore.Application.DTOs;
 using PetCore.Application.Services.Interfaces;
+using PetCore.Extensions;
 
 namespace PetCore.Controllers;
 
+[Authorize]
 [Produces("application/json")]
 [Route("api/[controller]")]
 [ApiController]
@@ -15,9 +19,9 @@ public class ReceitaController(IReceitaService receitaService) : ControllerBase
     /// <response code="200">Registros retornados com sucesso.</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult FetchAll()
+    public IActionResult FetchAll([FromQuery] PaginationOptions pagination)
     {
-        return Ok(receitaService.FetchAll());
+        return Ok(receitaService.FetchPage(pagination.ToPageQuery(Request.Query)));
     }
 
     /// <summary>
@@ -65,3 +69,5 @@ public class ReceitaController(IReceitaService receitaService) : ControllerBase
         return deleted ? NoContent() : NotFound();
     }
 }
+
+

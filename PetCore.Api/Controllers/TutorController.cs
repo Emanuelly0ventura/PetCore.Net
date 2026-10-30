@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
+using PetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using PetCore.Application.DTOs;
 using PetCore.Application.Services.Interfaces;
+using PetCore.Extensions;
 
 namespace PetCore.Controllers;
 
+[Authorize]
 [Produces("application/json")]
 [Route("api/[controller]")]
 [ApiController]
@@ -15,9 +19,9 @@ public class TutorController(ITutorService tutorService) : ControllerBase
     /// <response code="200">Registros retornados com sucesso.</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult FetchAll()
+    public IActionResult FetchAll([FromQuery] PaginationOptions pagination)
     {
-        return Ok(tutorService.FetchAll());
+        return Ok(tutorService.FetchPage(pagination.ToPageQuery(Request.Query)));
     }
 
     /// <summary>
@@ -57,6 +61,7 @@ public class TutorController(ITutorService tutorService) : ControllerBase
     /// <param name="request">Nova nota da avaliação.</param>
     /// <response code="200">Nota atualizada com sucesso.</response>
     /// <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
+    [HttpPatch("{id:guid}")]
     [HttpPut("{id:guid}/patch")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -81,20 +86,8 @@ public class TutorController(ITutorService tutorService) : ControllerBase
         return deleted ? NoContent() : NotFound();
     }
     
-    /// <summary>
-    /// Busca um tutor por email e senha.
-    /// </summary>
-    /// <param name="email">Email do tutor.</param>
-    /// <param name="senha">Senha do tutor.</param>
-    /// <response code="200">Tutor encontrado com sucesso.</response>
-    /// <response code="404">Nenhum tutor encontrado com as credenciais informadas.</response>
-    [HttpGet("login")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult FetchByEmail([FromQuery] string email, [FromQuery] string senha)
-    {
-        var tutor = tutorService.FetchByEmail(email, senha);
-
-        return tutor is null ? NotFound() : Ok(tutor);
-    }
 }
+
+
+
+

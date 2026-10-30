@@ -1,10 +1,11 @@
 using PetCore.Application.DTOs;
 using PetCore.Application.Interfaces;
 using PetCore.Application.Services.Interfaces;
+using PetCore.Application.Security;
 
 namespace PetCore.Application.Services.Implementations;
 
-public class TutorService(ITutorRepository tutorRepository) : ITutorService
+public class TutorService(ITutorRepository tutorRepository, IPasswordHashService passwordHasher) : ITutorService
 {
     public IReadOnlyCollection<TutorResponse> FetchAll()
     {
@@ -13,6 +14,12 @@ public class TutorService(ITutorRepository tutorRepository) : ITutorService
             .ToList();
     }
     
+    public PagedData<TutorResponse> FetchPage(PageQuery query)
+    {
+        var page = tutorRepository.FetchPage(query);
+        return new PagedData<TutorResponse>(page.Items.Select(item => new TutorResponse(item)).ToList(), page.Page, page.PageSize, page.TotalItems, page.TotalPages);
+    }
+
     public TutorResponse? FetchById(Guid id)
     {
         var tut = tutorRepository.FetchById(id);
@@ -23,6 +30,7 @@ public class TutorService(ITutorRepository tutorRepository) : ITutorService
     public TutorResponse Create(TutorRequest tutorRequest)
     {
         var tut = tutorRequest.ToDomain();
+        tut.UpdateSenha(passwordHasher.Hash(tut.Senha));
         tutorRepository.Create(tut);
         tutorRepository.SaveChanges();
 
@@ -61,7 +69,7 @@ public class TutorService(ITutorRepository tutorRepository) : ITutorService
         
         if (!string.IsNullOrWhiteSpace(userRequest.Senha))
         {
-            tut.UpdateSenha(userRequest.Senha);
+            tut.UpdateSenha(passwordHasher.Hash(userRequest.Senha));
             changed = true;
         }
         
@@ -94,9 +102,17 @@ public class TutorService(ITutorRepository tutorRepository) : ITutorService
 
     public TutorResponse? FetchByEmail(string email, string senha)
     {
-        var tutor = tutorRepository.FetchAll()
-            .FirstOrDefault(t => t.Email == email && t.Senha == senha);
+        var tutor = tutorRepository.FetchByEmail(email);
+        if (tutor is null || !passwordHasher.Verify(senha, tutor.Senha))
+            return null;
 
-        return tutor is null ? null : new TutorResponse(tutor);
+        if (!passwordHasher.IsHash(tutor.Senha))
+        {
+            tutor.UpdateSenha(passwordHasher.Hash(senha));
+            tutorRepository.Patch(tutor);
+            tutorRepository.SaveChanges();
+        }
+
+        return new TutorResponse(tutor);
     }
 }

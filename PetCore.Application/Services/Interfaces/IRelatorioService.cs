@@ -5,6 +5,7 @@ namespace PetCore.Application.Services.Interfaces;
 public interface IRelatorioService
 {
     IReadOnlyCollection<RelatorioResponse> FetchAll();
+    PagedData<RelatorioResponse> FetchPage(PageQuery query);
     
     RelatorioResponse? FetchById(Guid id);
     

@@ -5,6 +5,7 @@ namespace PetCore.Application.Services.Interfaces;
 public interface IProntuarioService
 {
     IReadOnlyCollection<ProntuarioResponse> FetchAll();
+    PagedData<ProntuarioResponse> FetchPage(PageQuery query);
     
     ProntuarioResponse? FetchById(Guid id);
     
