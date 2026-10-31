@@ -3,7 +3,6 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using PetCore.Application.Services.Interfaces;
 using PetCore.Authentication;
@@ -36,5 +35,3 @@ public sealed class AuthController(ITutorService tutors, IMedicoService medicos,
         return Ok(new { accessToken = new JwtSecurityTokenHandler().WriteToken(token), tokenType = "Bearer", expiresAtUtc = token.ValidTo });
     }
 }
-
-

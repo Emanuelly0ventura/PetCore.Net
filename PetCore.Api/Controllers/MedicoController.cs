@@ -11,7 +11,7 @@ namespace PetCore.Controllers;
 [Produces("application/json")]
 [Route("api/[controller]")]
 [ApiController]
-public class MedicoController(IMedicoService medicoService) : ControllerBase
+public class MedicoController(IMedicoService medicoService, IConfiguration configuration) : ControllerBase
 {
      /// <summary>
     /// Lista todos os registros.
@@ -21,9 +21,20 @@ public class MedicoController(IMedicoService medicoService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult FetchAll([FromQuery] PaginationOptions pagination)
     {
-        return Ok(medicoService.FetchPage(pagination.ToPageQuery(Request.Query)));
+        return Request.Query.IsPaginationRequested() ? Ok(medicoService.FetchPage(pagination.ToPageQuery(Request.Query))) : Ok(medicoService.FetchAll());
     }
 
+    /// <summary>Autentica um médico para clientes Mobile legados.</summary>
+    [AllowAnonymous]
+    [HttpGet("login")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public IActionResult Login([FromQuery] string email, [FromQuery] string senha)
+    {
+        var user = medicoService.FetchByEmail(email, senha);
+        if (user is null) return Unauthorized(new ProblemDetails { Status = 401, Title = "Credenciais inválidas" });
+        return Ok(MobileLoginResponse.Create(user, user.Email, user.Id, "veterinario", configuration));
+    }
     /// <summary>
     /// Busca um registro por Id.
     /// </summary>
@@ -45,6 +56,7 @@ public class MedicoController(IMedicoService medicoService) : ControllerBase
     /// <param name="request">Dados para criação de avaliação.</param>
     /// <response code="201">Registro criado com sucesso.</response>
     /// <response code="400">Payload inválido para criação.</response>
+    [AllowAnonymous]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -87,7 +99,3 @@ public class MedicoController(IMedicoService medicoService) : ControllerBase
     }
     
 }
-
-
-
-

@@ -21,7 +21,7 @@ public class ClinicaController(IClinicaService clinicaService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult FetchAll([FromQuery] PaginationOptions pagination)
     {
-        return Ok(clinicaService.FetchPage(pagination.ToPageQuery(Request.Query)));
+        return Request.Query.IsPaginationRequested() ? Ok(clinicaService.FetchPage(pagination.ToPageQuery(Request.Query))) : Ok(clinicaService.FetchAll());
     }
 
     /// <summary>
@@ -86,5 +86,3 @@ public class ClinicaController(IClinicaService clinicaService) : ControllerBase
         return deleted ? NoContent() : NotFound();
     }
 }
-
-

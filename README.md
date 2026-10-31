@@ -18,7 +18,7 @@ RM564555 - 2TDSPJ
 
 O **PetCore** é uma API REST desenvolvida em C# com ASP.NET Core para gerenciamento de informações veterinárias de pets, tutores, médicos, clínicas, prontuários, receitas, exames, medicamentos, históricos e relatórios.
 
-O projeto foi organizado em camadas, separando responsabilidades entre API, Application, Domain e Infrastructure. A persistência relacional usa SQL Server com Entity Framework Core e migrations; históricos clínicos são persistidos no MongoDB por um repositório dedicado.
+O projeto foi organizado em camadas, separando responsabilidades entre API, Application, Domain e Infrastructure. A persistência relacional usa PostgreSQL com Entity Framework Core e migrations; históricos clínicos são persistidos no MongoDB por um repositório dedicado.
 
 
 ### Arquitetura
@@ -33,7 +33,7 @@ Serviços, DTOs, contratos]
 Entidades e regras de negócio]
   API --> Infra[PetCore.Infrastructure
 EF Core, MongoDB, repositórios]
-  Infra --> SQL[(SQL Server)]
+  Infra --> SQL[(PostgreSQL)]
   Infra --> Mongo[(MongoDB
 históricos)]
 ```
@@ -42,9 +42,11 @@ históricos)]
 
 - `POST /api/auth/login` recebe `{ "email": "...", "password": "...", "role": "tutor" }` ou `role: "medico"`; credenciais inválidas retornam 401.
 - Rotas dos controllers exigem JWT Bearer. Swagger inclui o botão **Authorize** para enviar o token.
-- Consultas de coleção aceitam `page` (padrão 1), `pageSize` (padrão 20, máximo 100), `sortBy` (nome da propriedade da resposta) e `descending=true`.
-- Filtros aceitam propriedades mapeadas da resposta; valores textuais usam busca parcial sem diferenciar maiúsculas/minúsculas e valores como datas, IDs, enums e booleanos usam comparação exata. As respostas de coleção contêm `items`, metadados de página e links `self`, `collection`, `previous` e `next`; consultas por ID incluem `self` e `collection`.
-- Filtros, ordenação, contagem e paginação são aplicados nos repositórios antes de materializar os resultados: EF Core executa as consultas no SQL Server e MongoDB aplica filtro, ordenação e limites na consulta da coleção.
+- Para compatibilidade com o Mobile existente, coleções sem parâmetros de paginação retornam todos os registros como arrays JSON e consultas por ID retornam o DTO direto; links HATEOAS são enviados no header HTTP `Link`. Como o Mobile atual não envia parâmetros de paginação, essa compatibilidade pode materializar coleções grandes; use os parâmetros de paginação para consultas escaláveis.
+- Ao informar `page`, `pageSize`, `sortBy` ou `descending`, a coleção retorna `items`, `page`, `pageSize`, `totalItems`, `totalPages` e links `self`, `collection`, `first`, `last`, `previous` e `next` no corpo e no header `Link`. `pageSize` padrão 20, limite 100.
+- O login REST atual é `POST /api/auth/login` com `email`, `password` e `role`. Para o cliente Mobile legado, também existem `GET /api/Tutor/login?email=...&senha=...` e `GET /api/Medico/login?email=...&senha=...`, que retornam o usuário e o JWT (`token` e `accessToken`). Os cadastros `POST /api/Tutor` e `POST /api/Medico` são públicos; as demais rotas mantêm JWT.
+- Filtros aceitam os critérios implementados nos repositórios, como `tutorId` em Pets. Valores textuais aceitam busca parcial e critérios de IDs/datas usam comparações compatíveis com o tipo.
+- Filtros, ordenação, contagem e paginação são aplicados nos repositórios antes de materializar os resultados: EF Core executa as consultas no PostgreSQL e MongoDB aplica filtro, ordenação e limites na consulta da coleção.
 ## Solução Proposta
 
 A solução permite cadastrar e gerenciar os principais dados de uma clínica veterinária, oferecendo endpoints para criação, consulta, atualização e remoção de recursos.
@@ -82,9 +84,9 @@ O sistema contempla relacionamentos entre entidades, como:
 - C#
 - ASP.NET Core
 - Entity Framework Core
-- Microsoft SQL Server
+- PostgreSQL
 - MongoDB
-- Microsoft.EntityFrameworkCore.SqlServer
+- Npgsql.EntityFrameworkCore.PostgreSQL
 - MongoDB.Driver
 - Swagger / Swashbuckle
 - Arquitetura em camadas
@@ -98,15 +100,15 @@ O sistema contempla relacionamentos entre entidades, como:
 ### Health checks
 
 - `GET /health/live`: confirma que a API está em execução, sem dependências externas.
-- `GET /health/ready`: valida a conectividade do SQL Server, MongoDB e do serviço externo configurado.
+- `GET /health/ready`: valida a conectividade do PostgreSQL, MongoDB e do serviço externo configurado.
 
-Os recursos gerais usam **SQL Server** via EF Core. O recurso `Historico` usa a coleção MongoDB `historicos`. Para verificar um serviço externo, informe a URL no campo `ExternalServices:BaseUrl` de `PetCore.Api/appsettings.json`.
+Os recursos relacionais usam **PostgreSQL** via EF Core. O recurso `Historico` usa a coleção MongoDB `historicos`. Para verificar um serviço externo, informe a URL no campo `ExternalServices:BaseUrl` de `PetCore.Api/appsettings.json`.
 
 ### Compatibilidade com o aplicativo mobile
 
 Os DTOs aceitam os campos do mobile (`nascimento`, `fotoUrl`, `genero`, `tutorId`, `comedouroStatus`, `dataConsulta`, `observacoes`, `tipoExame`, `arquivoSolicitacao`, `arquivoReceita`, `arquivoHistorico` e os dados de tutor/pet/veterinário). Os registros de prontuário, exame e receita guardam as referências de arquivos como texto; a API não faz upload de arquivos. Quando o mobile não envia vínculo clínico (`idMedico`, `idHistorico` ou `idProntuario`), os campos correspondentes podem ficar vazios no registro.
 
-A migration inicial `InitialSqlServer` e as migrations seguintes estão em `PetCore.Infrastructure/Migrations`. As migrations PostgreSQL anteriores foram preservadas em `Migrations_PostgreSQL_Archive` como referência histórica. Aplique as migrations SQL Server com `dotnet ef database update --project PetCore.Infrastructure --startup-project PetCore.Api --context PetCoreContext`, usando a connection string `ConnectionStrings__DefaultConnection`.
+A pasta ativa PetCore.Infrastructure/Migrations contém a cadeia PostgreSQL original: InitialPostgreSQL, AddMobilePetFields e AjustarModeloMobile, com o snapshot final correspondente. Os arquivos SQL Server foram preservados em Migrations_SQLServer_Archive, fora da assembly de migrations.
 
 ### Logs, correlação e rastreabilidade
 
@@ -123,7 +125,7 @@ GET /metrics
 Os testes estão organizados por responsabilidade e seguem o padrão **AAA** (Arrange, Act, Assert). A suíte tem 59 testes unitários e 5 de integração. Coverlet gera `PetCore.Tests.Unit/coverage.cobertura.xml` e falha o comando se qualquer uma das camadas Domínio ou Application ficar abaixo de 60% de cobertura de linhas. Última medição: Domínio 80,42%, Application 74,94% e total 76,70%.
 
 - `PetCore.Tests.Unit`: testes de Domínio e Application com xUnit e Moq.
-- `PetCore.Tests.Integration`: testes HTTP com `WebApplicationFactory`, `CollectionFixture` compartilhada e banco EF Core InMemory, sem exigir SQL Server ou MongoDB local.
+- `PetCore.Tests.Integration`: testes HTTP com `WebApplicationFactory`, `CollectionFixture` compartilhada e banco EF Core InMemory, sem exigir PostgreSQL ou MongoDB local.
 
 Execute todos os testes na pasta raiz da solução (`PetCore.Net`):
 
@@ -373,7 +375,7 @@ Siga os passos abaixo para configurar e executar a API PetCore localmente.
 Antes de iniciar, verifique se você possui instalado:
 
 - .NET SDK
-- SQL Server 2022 ou superior
+- PostgreSQL (Render ou local)
 - MongoDB ou Docker Desktop
 - Visual Studio, Rider ou VS Code
 - Ferramenta do Entity Framework Core
@@ -413,7 +415,7 @@ No arquivo:
 PetCore.Api/appsettings.json
 ```
 
-Para desenvolvimento local, configure as conexões SQL Server e MongoDB nesse arquivo sem versionar credenciais. Em ambientes compartilhados, como o Render, use variáveis de ambiente conforme as instruções abaixo. Defina também `Jwt__Key` com um segredo aleatório de pelo menos 32 bytes, `Jwt__Issuer` e `Jwt__Audience`.
+Para desenvolvimento local, configure as conexões PostgreSQL e MongoDB nesse arquivo sem versionar credenciais. Em ambientes compartilhados, como o Render, use variáveis de ambiente conforme as instruções abaixo. Defina também `Jwt__Key` com um segredo aleatório de pelo menos 32 bytes, `Jwt__Issuer` e `Jwt__Audience`.
 
 #### Configuração no Render (deploy Docker)
 
@@ -421,20 +423,23 @@ No painel do Render, abra o serviço Web da API e acesse **Environment**. Cadast
 
 | Variável | Valor |
 | --- | --- |
-| `ConnectionStrings__DefaultConnection` | Connection string completa do SQL Server disponibilizada para o ambiente (Render) |
+| `ConnectionStrings__DefaultConnection` | URL de conexão PostgreSQL externa fornecida pelo Render; mantenha o valor como segredo |
 | `ConnectionStrings__MongoDb` | URI de conexão do MongoDB usado pela API |
 | `Jwt__Key` | Segredo aleatório com pelo menos 32 bytes |
 | `Jwt__Issuer` | Emissor configurado para o JWT (por exemplo, `PetCore`) |
 | `Jwt__Audience` | Público configurado para o JWT (por exemplo, `PetCore.Client`) |
+| `Cors__AllowedOrigins__0` | Primeira origem web permitida em produção; use `Cors__AllowedOrigins__1`, `__2` etc. para origens adicionais |
+
+CORS aceita `*` somente em Development. Em produção, configure origens específicas em `Cors__AllowedOrigins__0`, `Cors__AllowedOrigins__1` etc.; sem origens definidas, navegadores cross-origin ficam bloqueados. O app React Native nativo não depende de CORS.
 
 O ASP.NET Core converte `__` em `:` na configuração: `ConnectionStrings__DefaultConnection` corresponde a `ConnectionStrings:DefaultConnection`. Após salvar as variáveis, faça um novo deploy/restart do serviço. O Dockerfile apenas publica e inicia a aplicação; ele não define nem precisa conter as credenciais do banco. A API encerra a inicialização com uma mensagem clara se `ConnectionStrings__DefaultConnection`, `ConnectionStrings__MongoDb` ou `Jwt__Key` não estiver configurada.
 
-#### SQL Server:
+#### PostgreSQL local:
 
 Defina `ConnectionStrings__DefaultConnection` (exemplo PowerShell):
 
 ```powershell
-$env:ConnectionStrings__DefaultConnection = "Server=localhost;Database=PetCore;User Id=sa;Password=<senha-forte>;TrustServerCertificate=True;MultipleActiveResultSets=true"
+# Defina ConnectionStrings__DefaultConnection com a URL PostgreSQL da sua instância local; não use credenciais de produção neste arquivo.
 $rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
 $bytes = New-Object byte[] 48
 $rng.GetBytes($bytes)
@@ -456,23 +461,9 @@ $env:Jwt__Audience = "PetCore.Client"
 
 ---
 
-### 5. Aplicar as Migrations
+### 5. Script SQL PostgreSQL
 
-Com o SQL Server em execução e a connection string definida, aplique as migrations para criar as tabelas do banco de dados:
-
-```bash
-dotnet ef database update --project PetCore.Infrastructure --startup-project PetCore.Api --context PetCoreContext
-```
-
-#### Alternativa com Script SQL
-
-Script SQL Server idempotente gerado a partir da migration:
-
-```bash
-PetCore.Infrastructure/Migrations/InitialSqlServer.sql
-```
-
-O script idempotente foi gerado para SQL Server. Conforme informado, as migrations foram aplicadas ao banco de produção hospedado no Render. Para novos ambientes, configure a connection string por variável de ambiente antes de aplicar as migrations.
+A cadeia PostgreSQL foi restaurada a partir do ZIP de referência. O script SQL completo, gerado do início até AjustarModeloMobile, está em PetCore.Infrastructure/Migrations/PetCorePostgreSQL_InitialToFinal.sql. Ele foi apenas gerado e revisado; não foi executado em nenhum banco. Para um banco PostgreSQL 18 novo, crie a instância vazia no Render e aplique esse arquivo somente após conferir a configuração e manter um backup.
 
 Para iniciar somente o MongoDB local com o Docker Desktop, execute:
 
@@ -533,11 +524,3 @@ https://petcore-net.onrender.com
 
 
 ---
-
-
-
-
-
-
-
-

@@ -1,7 +1,8 @@
 using PetCore.Domain.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
+using Npgsql;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace PetCore.Exceptions;
@@ -34,9 +35,11 @@ public class GlobalExceptionHandler(IHostEnvironment environment) : IExceptionHa
         KeyNotFoundException e => (StatusCodes.Status404NotFound, "Recurso não encontrado", e.Message),
         UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "Não autorizado", "Credenciais inválidas ou ausentes."),
         InvalidOperationException e => (StatusCodes.Status400BadRequest, "Não foi possível concluir a operação", e.Message),
-        SqlException => (StatusCodes.Status503ServiceUnavailable, "Banco de dados indisponível", "Tente novamente mais tarde."),
+        DbUpdateException { InnerException: PostgresException { SqlState: PostgresErrorCodes.UniqueViolation or PostgresErrorCodes.ForeignKeyViolation } } => (StatusCodes.Status409Conflict, "Conflito de dados", "Já existe um registro com os mesmos dados ou a operação viola um relacionamento."),
+        DbUpdateException { InnerException: NpgsqlException } => (StatusCodes.Status503ServiceUnavailable, "Banco de dados indisponível", "Tente novamente mais tarde."),
+        DbUpdateException => (StatusCodes.Status409Conflict, "Conflito de dados", "Não foi possível salvar os dados por uma restrição de integridade."),
+        NpgsqlException => (StatusCodes.Status503ServiceUnavailable, "Banco de dados indisponível", "Tente novamente mais tarde."),
         _ when environment.IsDevelopment() => (StatusCodes.Status500InternalServerError, "Erro interno do servidor", exception.ToString()),
         _ => (StatusCodes.Status500InternalServerError, "Erro interno do servidor", "Ocorreu um erro inesperado. Tente novamente mais tarde.")
     };
 }
-

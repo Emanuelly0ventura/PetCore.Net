@@ -6,7 +6,9 @@ using PetCore.Application.Security;
 using PetCore.Infrastructure.Persistence;
 using PetCore.Infrastructure.Repositories;
 using MongoDB.Driver;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 using PetCore.Infrastructure.Persistence.Mongo;
+using PetCore.Configuration;
 
 namespace PetCore.Extensions;
 
@@ -74,9 +76,9 @@ public static class PersistenceExtensions
             if (string.IsNullOrWhiteSpace(connectionString))
             {
                 throw new InvalidOperationException(
-                    "A conexão SQL Server não foi configurada. Defina ConnectionStrings__DefaultConnection.");
+                    "A conexão PostgreSQL não foi configurada. Defina ConnectionStrings__DefaultConnection.");
             }
-            options.UseSqlServer(connectionString);
+            options.UseNpgsql(PostgreSqlConnectionString.Normalize(connectionString));
         });
         return services;
     }

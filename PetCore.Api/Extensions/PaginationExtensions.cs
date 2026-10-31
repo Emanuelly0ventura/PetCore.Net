@@ -7,6 +7,8 @@ public static class PaginationExtensions
 {
     private static readonly HashSet<string> Reserved = ["page", "pageSize", "sortBy", "descending"];
 
+    public static bool IsPaginationRequested(this IQueryCollection query) =>
+        Reserved.Any(key => query.ContainsKey(key));
     public static PageQuery ToPageQuery(this PaginationOptions options, IQueryCollection query) => new()
     {
         Page = Math.Max(1, options.Page),

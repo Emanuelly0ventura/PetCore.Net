@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PetCore.Tests.Integration")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e26b7935a1cfe67a6a7f87ac1717cb492dc987d3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+68fb907a41fb83b126e94e0d1fb4ed1f0addd542")]
 [assembly: System.Reflection.AssemblyProductAttribute("PetCore.Tests.Integration")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PetCore.Tests.Integration")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

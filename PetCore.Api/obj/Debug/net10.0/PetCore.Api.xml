@@ -205,6 +205,9 @@
             </summary>
             <response code="200">Registros retornados com sucesso.</response>
         </member>
+        <member name="M:PetCore.Controllers.MedicoController.Login(System.String,System.String)">
+            <summary>Autentica um médico para clientes Mobile legados.</summary>
+        </member>
         <member name="M:PetCore.Controllers.MedicoController.FetchById(System.Guid)">
             <summary>
             Busca um registro por Id.
@@ -397,6 +400,9 @@
             </summary>
             <response code="200">Registros retornados com sucesso.</response>
         </member>
+        <member name="M:PetCore.Controllers.TutorController.Login(System.String,System.String)">
+            <summary>Autentica um tutor para clientes Mobile legados.</summary>
+        </member>
         <member name="M:PetCore.Controllers.TutorController.FetchById(System.Guid)">
             <summary>
             Busca um registro por Id.
@@ -431,7 +437,7 @@
             <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
         </member>
         <member name="T:PetCoreContextFactory">
-            <summary>Creates a SQL Server context for EF Core tooling.</summary>
+            <summary>Creates a PostgreSQL context for EF Core tooling.</summary>
         </member>
         <member name="T:Program">
             <summary>

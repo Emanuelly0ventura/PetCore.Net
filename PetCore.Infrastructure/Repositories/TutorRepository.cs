@@ -4,11 +4,12 @@ using PetCore.Infrastructure.Persistence;
 
 namespace PetCore.Infrastructure.Repositories;
 
-public class TutorRepository (PetCoreContext context) : Repository<Tutor>(context), ITutorRepository
+public class TutorRepository : Repository<Tutor>, ITutorRepository
 {
+    public TutorRepository(PetCoreContext context) : base(context) { }
     public Tutor? FetchByEmail(string email)
     {
-        return context.Set<Tutor>().FirstOrDefault(x => x.Email == email);
+        return Set.FirstOrDefault(x => x.Email == email);
     }
 
     public IReadOnlyCollection<Tutor> FetchAllById(List<Guid> ids)

@@ -21,7 +21,7 @@ public class MedicamentoController(IMedicamentoService medicamentoService) : Con
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult FetchAll([FromQuery] PaginationOptions pagination)
     {
-        return Ok(medicamentoService.FetchPage(pagination.ToPageQuery(Request.Query)));
+        return Request.Query.IsPaginationRequested() ? Ok(medicamentoService.FetchPage(pagination.ToPageQuery(Request.Query))) : Ok(medicamentoService.FetchAll());
     }
 
     /// <summary>
@@ -86,5 +86,3 @@ public class MedicamentoController(IMedicamentoService medicamentoService) : Con
         return deleted ? NoContent() : NotFound();
     }
 }
-
-

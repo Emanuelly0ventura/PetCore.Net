@@ -21,7 +21,7 @@ public class ReceitaController(IReceitaService receitaService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult FetchAll([FromQuery] PaginationOptions pagination)
     {
-        return Ok(receitaService.FetchPage(pagination.ToPageQuery(Request.Query)));
+        return Request.Query.IsPaginationRequested() ? Ok(receitaService.FetchPage(pagination.ToPageQuery(Request.Query))) : Ok(receitaService.FetchAll());
     }
 
     /// <summary>
@@ -69,5 +69,3 @@ public class ReceitaController(IReceitaService receitaService) : ControllerBase
         return deleted ? NoContent() : NotFound();
     }
 }
-
-

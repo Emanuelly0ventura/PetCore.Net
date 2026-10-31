@@ -21,7 +21,7 @@ public class ProntuarioController(IProntuarioService prontuarioService) : Contro
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult FetchAll([FromQuery] PaginationOptions pagination)
     {
-        return Ok(prontuarioService.FetchPage(pagination.ToPageQuery(Request.Query)));
+        return Request.Query.IsPaginationRequested() ? Ok(prontuarioService.FetchPage(pagination.ToPageQuery(Request.Query))) : Ok(prontuarioService.FetchAll());
     }
 
     /// <summary>
@@ -86,5 +86,3 @@ public class ProntuarioController(IProntuarioService prontuarioService) : Contro
         return deleted ? NoContent() : NotFound();
     }
 }
-
-

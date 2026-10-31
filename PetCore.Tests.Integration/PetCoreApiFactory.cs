@@ -36,7 +36,7 @@ builder.ConfigureAppConfiguration((_, configuration) => configuration.AddInMemor
 
             services.PostConfigure<HealthCheckServiceOptions>(options =>
             {
-                foreach (var checkName in new[] { "mysql", "sqlserver", "postgresql", "mongodb" })
+                foreach (var checkName in new[] { "mysql", "postgresql", "mongodb" })
                 {
                     var databaseCheck = options.Registrations
                         .FirstOrDefault(registration => registration.Name == checkName);

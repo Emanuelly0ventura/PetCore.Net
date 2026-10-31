@@ -10,18 +10,18 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 const string CorsPolicyName = "PublicApi";
-var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? ["*"];
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
  
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(CorsPolicyName, policy =>
     {
-        if (allowedOrigins.Contains("*"))
+        if (allowedOrigins.Contains("*") && builder.Environment.IsDevelopment())
         {
             policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
         }
-        else
+        else if (allowedOrigins.Length > 0 && !allowedOrigins.Contains("*"))
         {
             policy.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod();
         }
@@ -114,7 +114,3 @@ app.Run();
 /// 
 /// </summary>
 public partial class Program;
-
-
-
-

@@ -21,7 +21,7 @@ public class RelatorioController(IRelatorioService relatorioService) : Controlle
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult FetchAll([FromQuery] PaginationOptions pagination)
     {
-        return Ok(relatorioService.FetchPage(pagination.ToPageQuery(Request.Query)));
+        return Request.Query.IsPaginationRequested() ? Ok(relatorioService.FetchPage(pagination.ToPageQuery(Request.Query))) : Ok(relatorioService.FetchAll());
     }
 
     /// <summary>
@@ -86,5 +86,3 @@ public class RelatorioController(IRelatorioService relatorioService) : Controlle
         return deleted ? NoContent() : NotFound();
     }
 }
-
-

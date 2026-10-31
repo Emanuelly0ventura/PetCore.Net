@@ -21,7 +21,7 @@ public class ExameController(IExameService exameService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult FetchAll([FromQuery] PaginationOptions pagination)
     {
-        return Ok(exameService.FetchPage(pagination.ToPageQuery(Request.Query)));
+        return Request.Query.IsPaginationRequested() ? Ok(exameService.FetchPage(pagination.ToPageQuery(Request.Query))) : Ok(exameService.FetchAll());
     }
 
     /// <summary>
@@ -86,5 +86,3 @@ public class ExameController(IExameService exameService) : ControllerBase
         return deleted ? NoContent() : NotFound();
     }
 }
-
-

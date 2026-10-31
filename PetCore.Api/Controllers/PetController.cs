@@ -21,7 +21,7 @@ public class PetController(IPetService petService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult FetchAll([FromQuery] PaginationOptions pagination, [FromQuery] Guid? tutorId = null)
     {
-        return Ok(petService.FetchPage(pagination.ToPageQuery(Request.Query)));
+        return Request.Query.IsPaginationRequested() ? Ok(petService.FetchPage(pagination.ToPageQuery(Request.Query))) : Ok(petService.FetchAll(tutorId));
     }
     
     /// <summary>
@@ -32,7 +32,7 @@ public class PetController(IPetService petService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult FetchMenuAll([FromQuery] PaginationOptions pagination)
     {
-        return Ok(petService.FetchMenuPage(pagination.ToPageQuery(Request.Query)));
+        return Request.Query.IsPaginationRequested() ? Ok(petService.FetchMenuPage(pagination.ToPageQuery(Request.Query))) : Ok(petService.FetchMenuAll());
     }
 
     /// <summary>
@@ -97,6 +97,3 @@ public class PetController(IPetService petService) : ControllerBase
         return deleted ? NoContent() : NotFound();
     }
 }
-
-
-

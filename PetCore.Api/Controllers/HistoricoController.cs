@@ -21,7 +21,7 @@ public class HistoricoController(IHistoricoService historicoService) : Controlle
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult FetchAll([FromQuery] PaginationOptions pagination)
     {
-        return Ok(historicoService.FetchPage(pagination.ToPageQuery(Request.Query)));
+        return Request.Query.IsPaginationRequested() ? Ok(historicoService.FetchPage(pagination.ToPageQuery(Request.Query))) : Ok(historicoService.FetchAll());
     }
 
     /// <summary>
@@ -69,5 +69,3 @@ public class HistoricoController(IHistoricoService historicoService) : Controlle
         return deleted ? NoContent() : NotFound();
     }
 }
-
-

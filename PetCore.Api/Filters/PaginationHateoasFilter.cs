@@ -4,63 +4,98 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.WebUtilities;
 using PetCore.Application.DTOs;
 using PetCore.Authentication;
-using PetCore.Extensions;
 
 namespace PetCore.Filters;
 
 public sealed class PaginationHateoasFilter : IAsyncResultFilter
 {
-    private static readonly HashSet<string> Reserved = ["page", "pageSize", "sortBy", "descending"];
+    private static readonly string[] PaginationKeys = ["page", "pageSize", "sortBy", "descending"];
 
     public async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
     {
-        if (context.HttpContext.Request.Method == "GET" && context.Result is ObjectResult result && result.Value is not null && result.Value is not string)
+        if (context.HttpContext.Request.Method == "GET" &&
+            context.Result is ObjectResult result && result.Value is not null && result.Value is not string)
         {
             var request = context.HttpContext.Request;
+            if (request.Path.Value?.EndsWith("/login", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                await next();
+                return;
+            }
+
             if (result.Value is IPagedData paged)
             {
-                var links = new List<HateoasLink>
-                {
-                    new(request.Path + request.QueryString, "self"),
-                    new(request.Path, "collection")
-                };
-                if (paged.Page > 1) links.Add(new(BuildPageLink(request.Path, request.Query, paged.Page - 1, paged.PageSize), "previous"));
-                if (paged.Page < paged.TotalPages) links.Add(new(BuildPageLink(request.Path, request.Query, paged.Page + 1, paged.PageSize), "next"));
-                var items = ((IEnumerable)paged.ItemsObject).Cast<object>().ToList();
-                result.Value = new PagedResponse<object>(items, paged.Page, paged.PageSize, paged.TotalItems, paged.TotalPages, links);
+                var links = BuildCollectionLinks(request.Path, request.Query, paged.Page, paged.PageSize, paged.TotalPages);
+                SetLinkHeader(context, links);
+                var usesPagedContract = PaginationKeys.Any(key => request.Query.ContainsKey(key));
+                result.Value = usesPagedContract
+                    ? new PagedResponse<object>(((IEnumerable)paged.ItemsObject).Cast<object>().ToList(), paged.Page, paged.PageSize, paged.TotalItems, paged.TotalPages, links)
+                    : paged.ItemsObject;
             }
             else if (result.Value is IEnumerable items)
             {
                 var values = items.Cast<object>().ToList();
-                foreach (var filter in request.Query.Where(x => !Reserved.Contains(x.Key)))
+                foreach (var filter in request.Query.Where(item => !PaginationKeys.Contains(item.Key, StringComparer.OrdinalIgnoreCase)))
                 {
-                    var property = values.FirstOrDefault()?.GetType().GetProperties().FirstOrDefault(p => p.Name.Equals(filter.Key, StringComparison.OrdinalIgnoreCase));
+                    var property = values.FirstOrDefault()?.GetType().GetProperties()
+                        .FirstOrDefault(candidate => candidate.Name.Equals(filter.Key, StringComparison.OrdinalIgnoreCase));
                     if (property is not null)
                         values = values.Where(item => property.GetValue(item)?.ToString()?.Contains(filter.Value.ToString(), StringComparison.OrdinalIgnoreCase) == true).ToList();
                 }
 
                 var sortBy = request.Query["sortBy"].FirstOrDefault();
-                var sort = values.FirstOrDefault()?.GetType().GetProperties().FirstOrDefault(p => p.Name.Equals(sortBy, StringComparison.OrdinalIgnoreCase));
+                var sort = values.FirstOrDefault()?.GetType().GetProperties()
+                    .FirstOrDefault(property => property.Name.Equals(sortBy, StringComparison.OrdinalIgnoreCase));
                 if (sort is not null)
-                    values = (request.Query["descending"] == "true" ? values.OrderByDescending(x => sort.GetValue(x)) : values.OrderBy(x => sort.GetValue(x))).ToList();
+                    values = (request.Query["descending"] == "true"
+                        ? values.OrderByDescending(item => sort.GetValue(item))
+                        : values.OrderBy(item => sort.GetValue(item))).ToList();
 
                 var page = Math.Max(1, int.TryParse(request.Query["page"], out var requestedPage) ? requestedPage : 1);
                 var size = Math.Clamp(int.TryParse(request.Query["pageSize"], out var requestedSize) ? requestedSize : 20, 1, 100);
-                var total = values.Count;
-                var pages = (int)Math.Ceiling(total / (double)size);
-                var links = new List<HateoasLink> { new(request.Path + request.QueryString, "self"), new(request.Path, "collection") };
-                if (page > 1) links.Add(new(BuildPageLink(request.Path, request.Query, page - 1, size), "previous"));
-                if (page < pages) links.Add(new(BuildPageLink(request.Path, request.Query, page + 1, size), "next"));
-                result.Value = new PagedResponse<object>(values.Skip((page - 1) * size).Take(size).ToList(), page, size, total, pages, links);
+                var pages = (int)Math.Ceiling(values.Count / (double)size);
+                var links = BuildCollectionLinks(request.Path, request.Query, page, size, pages);
+                SetLinkHeader(context, links);
+                result.Value = PaginationKeys.Any(key => request.Query.ContainsKey(key))
+                    ? new PagedResponse<object>(values.Skip((page - 1) * size).Take(size).ToList(), page, size, values.Count, pages, links)
+                    : values;
             }
-            else if (result.Value.GetType().GetProperty("Id")?.GetValue(result.Value) is { } id)
+            else if (result.Value.GetType().GetProperty("Id")?.GetValue(result.Value) is not null)
             {
-                var collection = request.Path.Value!.Split('/')[..^1].Aggregate((a, b) => a + "/" + b);
-                result.Value = new ResourceResponse<object>(result.Value,
-                [new(request.Path, "self"), new(collection, "collection"), new(request.Path + "/patch", "update", "PUT"), new(request.Path, "delete", "DELETE")]);
+                var links = new List<HateoasLink>
+                {
+                    new(request.Path + request.QueryString, "self"),
+                    new(GetCollectionPath(request.Path), "collection"),
+                    new(request.Path + "/patch", "update", "PUT"),
+                    new(request.Path, "patch", "PATCH"),
+                    new(request.Path, "delete", "DELETE")
+                };
+                SetLinkHeader(context, links);
             }
         }
         await next();
+    }
+
+    private static List<HateoasLink> BuildCollectionLinks(PathString path, IQueryCollection original, int page, int size, int pages)
+    {
+        var links = new List<HateoasLink> { new(BuildPageLink(path, original, page, size), "self"), new(path, "collection") };
+        if (pages > 0) links.Add(new(BuildPageLink(path, original, 1, size), "first"));
+        if (pages > 0) links.Add(new(BuildPageLink(path, original, pages, size), "last"));
+        if (page > 1) links.Add(new(BuildPageLink(path, original, page - 1, size), "previous"));
+        if (page < pages) links.Add(new(BuildPageLink(path, original, page + 1, size), "next"));
+        return links;
+    }
+
+    private static void SetLinkHeader(ResultExecutingContext context, IEnumerable<HateoasLink> links)
+    {
+        context.HttpContext.Response.Headers.Link = string.Join(", ", links.Select(link => $"<{link.Href}>; rel=\"{link.Rel}\""));
+    }
+
+    private static string GetCollectionPath(PathString path)
+    {
+        var value = path.Value ?? "/";
+        var slash = value.LastIndexOf('/');
+        return slash > 0 ? value[..slash] : value;
     }
 
     private static string BuildPageLink(PathString path, IQueryCollection original, int page, int size)

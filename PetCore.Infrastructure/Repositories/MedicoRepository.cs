@@ -4,10 +4,11 @@ using PetCore.Infrastructure.Persistence;
 
 namespace PetCore.Infrastructure.Repositories;
 
-public class MedicoRepository(PetCoreContext context) : Repository<Medico>(context), IMedicoRepository
+public class MedicoRepository : Repository<Medico>, IMedicoRepository
 {
+    public MedicoRepository(PetCoreContext context) : base(context) { }
     public Medico? FetchByEmail(string email)
     {
-        return context.Set<Medico>().FirstOrDefault(x => x.Email == email);
+        return Set.FirstOrDefault(x => x.Email == email);
     }
 }

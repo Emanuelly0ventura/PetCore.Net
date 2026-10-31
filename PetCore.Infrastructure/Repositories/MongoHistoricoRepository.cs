@@ -8,7 +8,7 @@ using PetCore.Infrastructure.Persistence.Mongo;
 
 namespace PetCore.Infrastructure.Repositories;
 
-/// <summary>Repositório Mongo para históricos; demais recursos continuam no SQL Server/EF Core.</summary>
+/// <summary>Repositório Mongo para históricos; demais recursos relacionais usam EF Core.</summary>
 public sealed class MongoHistoricoRepository : IHistoricoRepository
 {
     private readonly IMongoCollection<HistoricoDocument> _collection;

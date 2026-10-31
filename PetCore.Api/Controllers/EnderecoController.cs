@@ -21,7 +21,7 @@ public class EnderecoController(IEnderecoService enderecoService) : ControllerBa
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult FetchAll([FromQuery] PaginationOptions pagination)
     {
-        return Ok(enderecoService.FetchPage(pagination.ToPageQuery(Request.Query)));
+        return Request.Query.IsPaginationRequested() ? Ok(enderecoService.FetchPage(pagination.ToPageQuery(Request.Query))) : Ok(enderecoService.FetchAll());
     }
 
     /// <summary>
@@ -86,5 +86,3 @@ public class EnderecoController(IEnderecoService enderecoService) : ControllerBa
         return deleted ? NoContent() : NotFound();
     }
 }
-
-
