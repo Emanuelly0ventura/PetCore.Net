@@ -4,14 +4,15 @@ using PetCore.Authentication;
 using PetCore.Application.DTOs;
 using PetCore.Application.Services.Interfaces;
 using PetCore.Extensions;
+using PetCore.Authorization;
 
 namespace PetCore.Controllers;
 
-[Authorize]
+[Authorize(Roles = "tutor")]
 [Produces("application/json")]
 [Route("api/[controller]")]
 [ApiController]
-public class HistoricoController(IHistoricoService historicoService) : ControllerBase
+public class HistoricoController(IHistoricoService historicoService, IPetService petService) : ControllerBase
 {
      /// <summary>
     /// Lista todos os registros.
@@ -21,7 +22,17 @@ public class HistoricoController(IHistoricoService historicoService) : Controlle
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult FetchAll([FromQuery] PaginationOptions pagination)
     {
-        return Request.Query.IsPaginationRequested() ? Ok(historicoService.FetchPage(pagination.ToPageQuery(Request.Query))) : Ok(historicoService.FetchAll());
+        if (Request.Query.IsPaginationRequested())
+        {
+            var query = ResourceAccess.ScopeRecordPageQuery(
+                User, pagination.ToPageQuery(Request.Query), "TutorId", "TutorId");
+            return Ok(historicoService.FetchPage(query));
+        }
+
+        var tutorId = ResourceAccess.GetUserId(User);
+        return tutorId.HasValue
+            ? Ok(historicoService.FetchAllByTutorId(tutorId.Value))
+            : Forbid();
     }
 
     /// <summary>
@@ -36,7 +47,8 @@ public class HistoricoController(IHistoricoService historicoService) : Controlle
     public IActionResult FetchById(Guid id)
     {
         var item = historicoService.FetchById(id);
-        return item is null ? NotFound() : Ok(item);
+        if (item is null) return NotFound();
+        return ResourceAccess.CanAccessRecord(User, item) ? Ok(item) : Forbid();
     }
 
     /// <summary>
@@ -50,6 +62,19 @@ public class HistoricoController(IHistoricoService historicoService) : Controlle
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult Create([FromBody] HistoricoRequest request)
     {
+        var tutorId = ResourceAccess.GetUserId(User);
+        if (!tutorId.HasValue) return Forbid();
+
+        var petId = request.PetIdMobile ?? request.IdPet;
+        var pet = petService.FetchById(petId);
+        if (pet is null) return NotFound();
+        if (pet.TutorId != tutorId.Value) return Forbid();
+
+        request.IdPet = petId;
+        request.PetIdMobile = petId;
+        request.TutorId = tutorId;
+        request.PetNome = pet.Nome;
+
         var created = historicoService.Create(request);
         return CreatedAtAction(nameof(FetchById), new { id = created.Id }, created);
     }
@@ -65,6 +90,10 @@ public class HistoricoController(IHistoricoService historicoService) : Controlle
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult Delete(Guid id)
     {
+        var existing = historicoService.FetchById(id);
+        if (existing is null) return NotFound();
+        if (!ResourceAccess.CanAccessRecord(User, existing)) return Forbid();
+
         var deleted = historicoService.Delete(id);
         return deleted ? NoContent() : NotFound();
     }

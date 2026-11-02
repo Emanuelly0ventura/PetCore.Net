@@ -64,6 +64,14 @@ builder.Services.AddServices();
 
 builder.Services.AddRepositories();
 
+// The integration-test host replaces PostgreSQL with EF InMemory and does not connect to MongoDB.
+// Keep its client construction isolated from the production configuration contract.
+if (builder.Environment.IsEnvironment("Testing") &&
+    string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("MongoDb")))
+{
+    builder.Configuration["ConnectionStrings:MongoDb"] = "mongodb://localhost:27017";
+}
+
 builder.Services.AddDBContext(builder.Configuration);
 builder.Services.AddPetCoreObservability(builder.Configuration);
 
@@ -106,7 +114,7 @@ app.MapHealthChecks("/health/ready", new Microsoft.AspNetCore.Diagnostics.Health
 {
     Predicate = check => check.Tags.Contains("ready")
 }).AllowAnonymous();
-app.UseOpenTelemetryPrometheusScrapingEndpoint("/metrics");
+app.MapPrometheusScrapingEndpoint("/metrics").AllowAnonymous();
 
 app.Run();
 

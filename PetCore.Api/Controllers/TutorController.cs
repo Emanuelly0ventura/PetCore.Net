@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using PetCore.Application.DTOs;
 using PetCore.Application.Services.Interfaces;
 using PetCore.Extensions;
+using PetCore.Authorization;
 
 namespace PetCore.Controllers;
 
@@ -17,6 +18,7 @@ public class TutorController(ITutorService tutorService, IConfiguration configur
     /// Lista todos os registros.
     /// </summary>
     /// <response code="200">Registros retornados com sucesso.</response>
+    [Authorize(Roles = "medico,veterinario")]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult FetchAll([FromQuery] PaginationOptions pagination)
@@ -47,7 +49,11 @@ public class TutorController(ITutorService tutorService, IConfiguration configur
     public IActionResult FetchById(Guid id)
     {
         var item = tutorService.FetchById(id);
-        return item is null ? NotFound() : Ok(item);
+        if (item is null) return NotFound();
+        return ResourceAccess.IsVeterinarian(User) ||
+            (ResourceAccess.IsTutor(User) && ResourceAccess.IsOwnProfile(User, id))
+            ? Ok(item)
+            : Forbid();
     }
 
     /// <summary>
@@ -75,10 +81,14 @@ public class TutorController(ITutorService tutorService, IConfiguration configur
     /// <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
     [HttpPatch("{id:guid}")]
     [HttpPut("{id:guid}/patch")]
+    [Authorize(Roles = "tutor")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult Patch(Guid id, [FromBody] UserDadosRequest request)
     {
+        if (!ResourceAccess.IsOwnProfile(User, id))
+            return Forbid();
+
         var updated = tutorService.Patch(id, request);
         return updated is null ? NotFound() : Ok(updated);
     }
@@ -90,10 +100,14 @@ public class TutorController(ITutorService tutorService, IConfiguration configur
     /// <response code="204">Registro excluído com sucesso.</response>
     /// <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "tutor")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult Delete(Guid id)
     {
+        if (!ResourceAccess.IsOwnProfile(User, id))
+            return Forbid();
+
         var deleted = tutorService.Delete(id);
         return deleted ? NoContent() : NotFound();
     }

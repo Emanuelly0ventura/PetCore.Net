@@ -1,4 +1,10 @@
 **/bin/
 **/obj/
+**/logs/
+.idea/
+.vs/
+*.user
+*.suo
 **/TestResults/
-**/coverage.cobertura.xml
+coverage/
+coverage.*

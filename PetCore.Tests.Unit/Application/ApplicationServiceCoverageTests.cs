@@ -102,7 +102,7 @@ public sealed class ApplicationServiceCoverageTests
         var pet1 = NewPet(); pet1.Tutores.Add(tutor);
         var pet2 = NewPet();
         var repo = new Mock<IPetRepository>();
-        repo.Setup(x => x.FetchAll()).Returns([pet1, pet2]);
+        repo.Setup(x => x.FetchAllByTutorId(tutor.Id)).Returns([pet1]);
         var service = new PetService(repo.Object, new Mock<ITutorRepository>().Object);
         // Act
         var result = service.FetchAll(tutor.Id);

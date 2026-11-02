@@ -7,6 +7,7 @@ public interface IHistoricoRepository{
     void Create(Historico historico);
     void Delete(Historico historico);
     IReadOnlyCollection<Historico> FetchAll();
+    IReadOnlyCollection<Historico> FetchAllByTutorId(Guid tutorId);
     PagedData<Historico> FetchPage(PageQuery query);
     Historico? FetchById(Guid id);
     void SaveChanges();

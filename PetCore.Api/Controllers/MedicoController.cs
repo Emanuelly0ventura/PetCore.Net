@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using PetCore.Application.DTOs;
 using PetCore.Application.Services.Interfaces;
 using PetCore.Extensions;
+using PetCore.Authorization;
 
 namespace PetCore.Controllers;
 
@@ -18,9 +19,26 @@ public class MedicoController(IMedicoService medicoService, IConfiguration confi
     /// </summary>
     /// <response code="200">Registros retornados com sucesso.</response>
     [HttpGet]
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult FetchAll([FromQuery] PaginationOptions pagination)
     {
+        if (ResourceAccess.IsVeterinarian(User) != true)
+        {
+            if (Request.Query.IsPaginationRequested())
+            {
+                var page = medicoService.FetchPage(pagination.ToPageQuery(Request.Query));
+                var catalogPage = new PagedData<MedicoCatalogResponse>(
+                    page.Items.Select(item => new MedicoCatalogResponse(item.Especializacao)).ToList(),
+                    page.Page, page.PageSize, page.TotalItems, page.TotalPages);
+                return Ok(catalogPage);
+            }
+
+            return Ok(medicoService.FetchAll()
+                .Select(item => new MedicoCatalogResponse(item.Especializacao))
+                .ToList());
+        }
+
         return Request.Query.IsPaginationRequested() ? Ok(medicoService.FetchPage(pagination.ToPageQuery(Request.Query))) : Ok(medicoService.FetchAll());
     }
 
@@ -42,10 +60,14 @@ public class MedicoController(IMedicoService medicoService, IConfiguration confi
     /// <response code="200">Registro encontrado.</response>
     /// <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
     [HttpGet("{id:guid}")]
+    [Authorize(Roles = "medico,veterinario")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult FetchById(Guid id)
     {
+        if (!ResourceAccess.IsOwnProfile(User, id))
+            return Forbid();
+
         var item = medicoService.FetchById(id);
         return item is null ? NotFound() : Ok(item);
     }
@@ -75,10 +97,14 @@ public class MedicoController(IMedicoService medicoService, IConfiguration confi
     /// <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
     [HttpPatch("{id:guid}")]
     [HttpPut("{id:guid}/patch")]
+    [Authorize(Roles = "medico,veterinario")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult Patch(Guid id, [FromBody] UserDadosRequest request)
     {
+        if (!ResourceAccess.IsOwnProfile(User, id))
+            return Forbid();
+
         var updated = medicoService.Patch(id, request);
         return updated is null ? NotFound() : Ok(updated);
     }
@@ -90,10 +116,14 @@ public class MedicoController(IMedicoService medicoService, IConfiguration confi
     /// <response code="204">Registro excluído com sucesso.</response>
     /// <response code="404">Nenhum registro foi encontrado para o Id informado.</response>
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "medico,veterinario")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult Delete(Guid id)
     {
+        if (!ResourceAccess.IsOwnProfile(User, id))
+            return Forbid();
+
         var deleted = medicoService.Delete(id);
         return deleted ? NoContent() : NotFound();
     }

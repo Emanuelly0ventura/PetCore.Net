@@ -9,8 +9,9 @@ public class PetService(IPetRepository petRepository,
 {
     public IReadOnlyCollection<PetResponse> FetchAll(Guid? tutorId = null)
     {
-        var pets = petRepository.FetchAll();
-        if (tutorId.HasValue) pets = pets.Where(p => p.Tutores.Any(t => t.Id == tutorId.Value)).ToList();
+        var pets = tutorId.HasValue
+            ? petRepository.FetchAllByTutorId(tutorId.Value)
+            : petRepository.FetchAll();
         return pets
             .Select(pet => new PetResponse(pet))
             .ToList();

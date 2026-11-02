@@ -4,19 +4,79 @@ using PetCore.Authentication;
 using PetCore.Application.DTOs;
 using PetCore.Application.Services.Interfaces;
 using PetCore.Extensions;
+using PetCore.Authorization;
 
 namespace PetCore.Controllers;
 
-[Authorize]
+[Authorize(Roles = "tutor,medico,veterinario")]
 [Produces("application/json")]
 [Route("api/[controller]")]
 [ApiController]
-public class ProtocoloController(IProtocoloService protocoloService) : ControllerBase
+public class ProtocoloController(IProtocoloService protocoloService, IPetService petService) : ControllerBase
 {
-    [HttpGet] public IActionResult FetchAll([FromQuery] PaginationOptions pagination) => Request.Query.IsPaginationRequested() ? Ok(protocoloService.FetchPage(pagination.ToPageQuery(Request.Query))) : Ok(protocoloService.FetchAll());
-    [HttpGet("{id}")] public IActionResult FetchById(string id) => protocoloService.FetchById(id) is { } item ? Ok(item) : NotFound();
-    [HttpPost] public IActionResult Create([FromBody] ProtocoloRequest request) { var created = protocoloService.Create(request); return CreatedAtAction(nameof(FetchById), new { id = created.Id }, created); }
+    [HttpGet]
+    public IActionResult FetchAll([FromQuery] PaginationOptions pagination)
+    {
+        if (Request.Query.IsPaginationRequested())
+        {
+            var query = ResourceAccess.ScopeRecordPageQuery(User, pagination.ToPageQuery(Request.Query), "TutorId", "VeterinarioId");
+            return Ok(protocoloService.FetchPage(query));
+        }
+
+        return Ok(ResourceAccess.FilterRecords(User, protocoloService.FetchAll()));
+    }
+
+    [HttpGet("{id}")]
+    public IActionResult FetchById(string id)
+    {
+        var item = protocoloService.FetchById(id);
+        if (item is null) return NotFound();
+        return ResourceAccess.CanAccessRecord(User, item) ? Ok(item) : Forbid();
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "medico,veterinario")]
+    public IActionResult Create([FromBody] ProtocoloRequest request)
+    {
+        var medicoId = ResourceAccess.GetUserId(User);
+        if (!medicoId.HasValue) return Forbid();
+        request.VeterinarioId = medicoId.Value;
+        if (request.PetId.HasValue)
+        {
+            var pet = petService.FetchById(request.PetId.Value);
+            if (pet is null) return NotFound();
+            if (request.TutorId.HasValue && request.TutorId != pet.TutorId) return Forbid();
+            request.TutorId = pet.TutorId;
+            request.PetNome = pet.Nome;
+        }
+        else
+        {
+            request.TutorId = null;
+            request.TutorNome = null;
+        }
+
+        var created = protocoloService.Create(request);
+        return CreatedAtAction(nameof(FetchById), new { id = created.Id }, created);
+    }
+
     [HttpPatch("{id}")]
-    [HttpPut("{id}/patch")] public IActionResult Patch(string id, ProtocoloDadosRequest request) => protocoloService.Patch(id, request) is { } item ? Ok(item) : NotFound();
-    [HttpDelete("{id}")] public IActionResult Delete(string id) => protocoloService.Delete(id) ? NoContent() : NotFound();
+    [HttpPut("{id}/patch")]
+    [Authorize(Roles = "medico,veterinario")]
+    public IActionResult Patch(string id, ProtocoloDadosRequest request)
+    {
+        var existing = protocoloService.FetchById(id);
+        if (existing is null) return NotFound();
+        if (!ResourceAccess.CanAccessRecord(User, existing)) return Forbid();
+        return protocoloService.Patch(id, request) is { } item ? Ok(item) : NotFound();
+    }
+
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "medico,veterinario")]
+    public IActionResult Delete(string id)
+    {
+        var existing = protocoloService.FetchById(id);
+        if (existing is null) return NotFound();
+        if (!ResourceAccess.CanAccessRecord(User, existing)) return Forbid();
+        return protocoloService.Delete(id) ? NoContent() : NotFound();
+    }
 }

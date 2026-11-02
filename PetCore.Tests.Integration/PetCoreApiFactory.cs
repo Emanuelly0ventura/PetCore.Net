@@ -19,7 +19,8 @@ builder.ConfigureAppConfiguration((_, configuration) => configuration.AddInMemor
 {
     ["Jwt:Key"] = "test-only-signing-key-with-32-bytes-minimum",
     ["Jwt:Issuer"] = "PetCore",
-    ["Jwt:Audience"] = "PetCore.Client"
+    ["Jwt:Audience"] = "PetCore.Client",
+    ["ConnectionStrings:MongoDb"] = "mongodb://localhost:27017"
 }));
         builder.ConfigureServices(services =>
         {

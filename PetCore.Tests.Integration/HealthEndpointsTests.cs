@@ -32,6 +32,28 @@ public class HealthEndpointsTests(PetCoreApiFactory factory)
     }
 
     [Fact]
+    public async Task Swagger_PublicaDocumentoOpenApi()
+    {
+        var client = factory.CreateClient();
+
+        var response = await client.GetAsync("/swagger/v1/swagger.json");
+
+        Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
+        Assert.Contains("openapi", await response.Content.ReadAsStringAsync(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task Metrics_PublicaFormatoPrometheus()
+    {
+        var client = factory.CreateClient();
+
+        var response = await client.GetAsync("/metrics");
+
+        Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
+        Assert.Contains("text/plain", response.Content.Headers.ContentType?.MediaType, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task RotaInexistente_RequisicaoInvalida_RetornaNotFound()
     {
         // Arrange

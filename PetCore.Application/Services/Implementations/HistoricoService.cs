@@ -15,6 +15,11 @@ public class HistoricoService(
             .Select(hist => new HistoricoResponse(hist))
             .ToList();
     }
+
+    public IReadOnlyCollection<HistoricoResponse> FetchAllByTutorId(Guid tutorId) =>
+        historicoRepository.FetchAllByTutorId(tutorId)
+            .Select(hist => new HistoricoResponse(hist))
+            .ToList();
     
     public PagedData<HistoricoResponse> FetchPage(PageQuery query)
     {

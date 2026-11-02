@@ -13,6 +13,12 @@ public class PetRepository(PetCoreContext context) : Repository<Pet>(context), I
 
     public new IReadOnlyCollection<Pet> FetchAll() => Set.Include(x => x.Tutores).ToList();
 
+    public IReadOnlyCollection<Pet> FetchAllByTutorId(Guid tutorId) => Set
+        .Where(pet => pet.Tutores.Any(tutor => tutor.Id == tutorId))
+        .Include(pet => pet.Tutores)
+        .AsNoTracking()
+        .ToList();
+
     public override PagedData<Pet> FetchPage(PageQuery query)
     {
         var source = Queryable;

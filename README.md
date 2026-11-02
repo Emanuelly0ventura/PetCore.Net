@@ -25,14 +25,10 @@ O projeto foi organizado em camadas, separando responsabilidades entre API, Appl
 
 ```mermaid
 flowchart LR
-  Client[Cliente HTTP / Swagger] --> API[PetCore.Api
-Controllers, JWT, validação, observabilidade]
-  API --> App[PetCore.Application
-Serviços, DTOs, contratos]
-  App --> Domain[PetCore.Domain
-Entidades e regras de negócio]
-  API --> Infra[PetCore.Infrastructure
-EF Core, MongoDB, repositórios]
+  Client[Cliente HTTP / Swagger] --> API[PetCore.Api<br/>Controllers, JWT, validação, observabilidade]
+  API --> App[PetCore.Application<br/>Serviços, DTOs, contratos]
+  App --> Domain[PetCore.Domain<br/>Entidades e regras de negócio]
+  API --> Infra[PetCore.Infrastructure<br/>EF Core, MongoDB, repositórios]
   Infra --> SQL[(PostgreSQL)]
   Infra --> Mongo[(MongoDB
 históricos)]
@@ -41,12 +37,14 @@ históricos)]
 ### Segurança e consultas
 
 - `POST /api/auth/login` recebe `{ "email": "...", "password": "...", "role": "tutor" }` ou `role: "medico"`; credenciais inválidas retornam 401.
-- Rotas dos controllers exigem JWT Bearer. Swagger inclui o botão **Authorize** para enviar o token.
-- Para compatibilidade com o Mobile existente, coleções sem parâmetros de paginação retornam todos os registros como arrays JSON e consultas por ID retornam o DTO direto; links HATEOAS são enviados no header HTTP `Link`. Como o Mobile atual não envia parâmetros de paginação, essa compatibilidade pode materializar coleções grandes; use os parâmetros de paginação para consultas escaláveis.
+- Operações CRUD e consultas por ID exigem JWT Bearer. O Swagger inclui o botão **Authorize** e não exige token nas operações marcadas como públicas.
+- O perfil `tutor` acessa e altera seu próprio perfil e pets, e consulta seus próprios históricos e registros clínicos vinculados ao seu tutor. O perfil `medico`/`veterinario` consulta tutores para os fluxos de atendimento e só altera registros clínicos atribuídos ao próprio ID; os IDs do profissional nos novos registros são definidos a partir do JWT. Não existe entidade ou role de administrador no domínio atual.
+- Para o cadastro no Mobile, `GET /api/Medico`, `GET /api/Clinica` e `GET /api/Exame` são públicos. A listagem pública de médicos expõe somente `especializacao`; a de exames expõe somente `nome`. A listagem de clínicas retorna os campos usados pelo formulário (`id`, `nome`, `cnpj`, `cep` e `complemento`). Consultas por ID e operações de escrita continuam protegidas.
+- Os serviços reais do Mobile consomem arrays JSON em listagens sem paginação e DTOs diretos em consultas e gravações individuais; por isso, essas rotas não usam um envelope `{ data, links }`. Links HATEOAS são enviados no header HTTP `Link`. Como o Mobile atual não envia parâmetros de paginação, essa compatibilidade pode materializar coleções grandes; use os parâmetros de paginação para consultas escaláveis.
 - Ao informar `page`, `pageSize`, `sortBy` ou `descending`, a coleção retorna `items`, `page`, `pageSize`, `totalItems`, `totalPages` e links `self`, `collection`, `first`, `last`, `previous` e `next` no corpo e no header `Link`. `pageSize` padrão 20, limite 100.
 - O login REST atual é `POST /api/auth/login` com `email`, `password` e `role`. Para o cliente Mobile legado, também existem `GET /api/Tutor/login?email=...&senha=...` e `GET /api/Medico/login?email=...&senha=...`, que retornam o usuário e o JWT (`token` e `accessToken`). Os cadastros `POST /api/Tutor` e `POST /api/Medico` são públicos; as demais rotas mantêm JWT.
 - Filtros aceitam os critérios implementados nos repositórios, como `tutorId` em Pets. Valores textuais aceitam busca parcial e critérios de IDs/datas usam comparações compatíveis com o tipo.
-- Filtros, ordenação, contagem e paginação são aplicados nos repositórios antes de materializar os resultados: EF Core executa as consultas no PostgreSQL e MongoDB aplica filtro, ordenação e limites na consulta da coleção.
+- Quando a requisição inclui parâmetros de paginação, filtros, ordenação, contagem e limites são aplicados pelo repositório antes de materializar os resultados: EF Core constrói `IQueryable` e MongoDB filtra/ordena/limita na coleção. Sem paginação, as listagens mantêm o contrato de array direto; filtros e ordenação genéricos aplicados pelo filtro global ainda operam em memória. Para filtros em grande volume, solicite paginação.
 ## Solução Proposta
 
 A solução permite cadastrar e gerenciar os principais dados de uma clínica veterinária, oferecendo endpoints para criação, consulta, atualização e remoção de recursos.
@@ -114,7 +112,7 @@ A pasta ativa PetCore.Infrastructure/Migrations contém a cadeia PostgreSQL orig
 
 O Serilog escreve logs estruturados nos níveis Information, Warning e Error tanto no console como em `PetCore.Api/logs/`, com retenção de 14 dias. Toda requisição recebe/devolve o cabeçalho `X-Correlation-ID`; envie-o na chamada para correlacionar os eventos de ponta a ponta.
 
-O OpenTelemetry instrumenta automaticamente as requisições ASP.NET Core e disponibiliza tracing distribuído entre as camadas. As métricas incluem duração de requisições e contador de erros HTTP 5xx, expostos em formato Prometheus em:
+O OpenTelemetry instrumenta requisições ASP.NET Core; nesta configuração não há exporter de traces OTLP configurado, portanto os spans não são enviados para um backend externo. As métricas incluem duração de requisições e contador de erros HTTP 5xx, expostos em formato Prometheus em:
 
 ```text
 GET /metrics
@@ -122,10 +120,12 @@ GET /metrics
 
 ## ✅ Testes automatizados
 
-Os testes estão organizados por responsabilidade e seguem o padrão **AAA** (Arrange, Act, Assert). A suíte tem 59 testes unitários e 5 de integração. Coverlet gera `PetCore.Tests.Unit/coverage.cobertura.xml` e falha o comando se qualquer uma das camadas Domínio ou Application ficar abaixo de 60% de cobertura de linhas. Última medição: Domínio 80,42%, Application 74,94% e total 76,70%.
+Os testes estão organizados por responsabilidade e seguem o padrão **AAA** (Arrange, Act, Assert). Na execução da revisão atual, passaram 59 testes unitários e 19 testes de integração. Os testes unitários de Domínio e Application usam xUnit/Moq; os testes de integração exercitam a API via `WebApplicationFactory` e banco EF Core InMemory. Coverlet gera o relatório Cobertura em `PetCore.Tests.Unit/coverage.cobertura.xml` e falha se Domínio ou Application ficar abaixo de 60% de cobertura de linhas. Cobertura nesta execução: Domínio 80,42%, Application 74,74% e total 76,56% de linhas.
 
 - `PetCore.Tests.Unit`: testes de Domínio e Application com xUnit e Moq.
 - `PetCore.Tests.Integration`: testes HTTP com `WebApplicationFactory`, `CollectionFixture` compartilhada e banco EF Core InMemory, sem exigir PostgreSQL ou MongoDB local.
+
+Esses testes não validam conexão, SQL gerado/aplicado, migrations, transações ou compatibilidade real do MongoDB. A validação real depende de um PostgreSQL e MongoDB exclusivos de teste configurados por `ConnectionStrings__DefaultConnection` e `ConnectionStrings__MongoDb`; o banco do Render não deve ser usado para a suíte.
 
 Execute todos os testes na pasta raiz da solução (`PetCore.Net`):
 
@@ -180,9 +180,17 @@ PetCore
 
 POST /api/auth/login
 
-Body JSON: `{ "email": "...", "password": "...", "role": "tutor" }` (ou `"medico"`). O endpoint retorna JWT Bearer. As rotas CRUD exigem token.
+Body JSON: `{ "email": "...", "password": "...", "role": "tutor" }` (ou `"medico"`/`"veterinario"`). O endpoint retorna JWT Bearer. As rotas CRUD e consultas por ID exigem token, exceto os catálogos públicos indicados abaixo.
+
+GET /api/Tutor/login?email=...&senha=...
+
+GET /api/Medico/login?email=...&senha=...
+
+As duas rotas de login acima preservam o contrato consumido pelo Mobile legado e retornam os dados do perfil junto com `token` e `accessToken`. Para chamadas de produção, prefira o POST, que não envia a senha na URL.
 
 ### Clínica
+
+GET /api/Clinica é público para carregar o catálogo durante o cadastro Mobile; consultas por ID e operações de escrita exigem JWT.
 
 GET /api/Clinica?page=1&pageSize=20&sortBy=nome
 
@@ -211,6 +219,8 @@ DELETE /api/Endereco/{id}
 ---
 
 ### Exame
+
+GET /api/Exame é público para carregar o catálogo durante o cadastro Mobile. Sem autenticação, o retorno contém somente os nomes; os demais campos clínicos e as operações de escrita continuam protegidos.
 
 GET /api/Exame
 
@@ -251,6 +261,8 @@ DELETE /api/Medicamento/{id}
 ---
 
 ### Médico
+
+GET /api/Medico é público para carregar especializações durante o cadastro Mobile. Sem autenticação, o retorno contém somente as especializações; consultas por ID e operações de escrita continuam protegidas.
 
 GET /api/Medico
 
@@ -409,13 +421,9 @@ dotnet restore
 
 ### 4. Configurar os Bancos de Dados
 
-No arquivo:
+O arquivo `PetCore.Api/appsettings.json` não contém connection strings nem chave JWT. Em Development, `PetCore.Api/appsettings.Development.json` configura o MongoDB local em `localhost`; mantenha o MongoDB local ativo por Docker. Configure a connection string PostgreSQL e a chave JWT por User Secrets ou variáveis de ambiente, sem versionar credenciais. Em ambientes compartilhados, como o Render, use as variáveis de ambiente abaixo.
 
-```bash
-PetCore.Api/appsettings.json
-```
-
-Para desenvolvimento local, configure as conexões PostgreSQL e MongoDB nesse arquivo sem versionar credenciais. Em ambientes compartilhados, como o Render, use variáveis de ambiente conforme as instruções abaixo. Defina também `Jwt__Key` com um segredo aleatório de pelo menos 32 bytes, `Jwt__Issuer` e `Jwt__Audience`.
+Defina `Jwt__Key` com um segredo aleatório de pelo menos 32 bytes; `Jwt__Issuer` e `Jwt__Audience` já têm valores não secretos no `appsettings.json` e podem ser substituídos por ambiente.
 
 #### Configuração no Render (deploy Docker)
 
@@ -449,15 +457,9 @@ $env:Jwt__Issuer = "PetCore"
 $env:Jwt__Audience = "PetCore.Client"
 ```
 
-#### MongoDB local (Docker Desktop):
+#### MongoDB local (Docker Desktop)
 
-```json
-{
-  "ConnectionStrings": {
-    "MongoDb": "mongodb://localhost:27017"
-  }
-}
-```
+Em Development a aplicação usa a URI local definida em `appsettings.Development.json`. Essa configuração não é aplicada em produção; o Render deve fornecer `ConnectionStrings__MongoDb`.
 
 ---
 

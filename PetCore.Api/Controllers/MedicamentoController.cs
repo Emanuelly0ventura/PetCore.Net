@@ -7,7 +7,7 @@ using PetCore.Extensions;
 
 namespace PetCore.Controllers;
 
-[Authorize]
+[Authorize(Roles = "medico,veterinario")]
 [Produces("application/json")]
 [Route("api/[controller]")]
 [ApiController]

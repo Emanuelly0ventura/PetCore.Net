@@ -22,6 +22,13 @@ public sealed class MongoHistoricoRepository : IHistoricoRepository
             .Select(ToDomain)
             .ToList();
 
+    public IReadOnlyCollection<Historico> FetchAllByTutorId(Guid tutorId) =>
+        _collection.Find(document => document.TutorId == tutorId)
+            .SortBy(document => document.DataAbertura)
+            .ToList()
+            .Select(ToDomain)
+            .ToList();
+
     public PagedData<Historico> FetchPage(PageQuery query)
     {
         var builder = Builders<HistoricoDocument>.Filter;

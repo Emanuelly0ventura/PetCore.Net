@@ -9,6 +9,7 @@ public interface IPetRepository
     void Patch(Pet pet);
     void Delete(Pet pet);
     IReadOnlyCollection<Pet> FetchAll();
+    IReadOnlyCollection<Pet> FetchAllByTutorId(Guid tutorId);
     PagedData<Pet> FetchPage(PageQuery query);
     IReadOnlyCollection<Pet> FetchMenuAll();
     PagedData<Pet> FetchMenuPage(PageQuery query);

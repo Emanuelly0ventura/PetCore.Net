@@ -7,7 +7,7 @@ using PetCore.Extensions;
 
 namespace PetCore.Controllers;
 
-[Authorize]
+[Authorize(Roles = "medico,veterinario")]
 [Produces("application/json")]
 [Route("api/[controller]")]
 [ApiController]
@@ -17,6 +17,7 @@ public class ClinicaController(IClinicaService clinicaService) : ControllerBase
     /// Lista todos os registros.
     /// </summary>
     /// <response code="200">Registros retornados com sucesso.</response>
+    [AllowAnonymous]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult FetchAll([FromQuery] PaginationOptions pagination)
