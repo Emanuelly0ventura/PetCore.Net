@@ -73,7 +73,7 @@ public sealed class ApiSecurityAndPaginationTests(PetCoreApiFactory factory)
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
         Assert.Equal(1, json.RootElement.GetProperty("items").GetArrayLength());
-        Assert.True(json.RootElement.GetProperty("totalItems").GetInt32() >= 2);
+        Assert.True(json.RootElement.GetProperty("totalCount").GetInt32() >= 2);
         Assert.Contains(json.RootElement.GetProperty("links").EnumerateArray(), link => link.GetProperty("rel").GetString() == "next");
     }
 
@@ -101,7 +101,7 @@ public sealed class ApiSecurityAndPaginationTests(PetCoreApiFactory factory)
         var first = await client.GetAsync("/api/Tutor?page=1&pageSize=1&sortBy=nome&descending=false&nome=Filtro");
         Assert.Equal(HttpStatusCode.OK, first.StatusCode);
         using var firstJson = JsonDocument.Parse(await first.Content.ReadAsStringAsync());
-        Assert.Equal(2, firstJson.RootElement.GetProperty("totalItems").GetInt32());
+        Assert.Equal(2, firstJson.RootElement.GetProperty("totalCount").GetInt32());
         Assert.Equal("Filtro A", firstJson.RootElement.GetProperty("items")[0].GetProperty("nome").GetString());
         Assert.Contains(firstJson.RootElement.GetProperty("links").EnumerateArray(), link => link.GetProperty("rel").GetString() == "next");
         Assert.Contains(first.Headers.GetValues("Link"), link => link.Contains("nome=Filtro", StringComparison.Ordinal) && link.Contains("sortBy=nome", StringComparison.Ordinal));
@@ -143,9 +143,10 @@ public sealed class ApiSecurityAndPaginationTests(PetCoreApiFactory factory)
         {
             nome = "Hemograma de teste",
             tipoExame = "Hemograma",
+            data = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-1)),
             idMedico = forgedId
         });
-        Assert.Equal(HttpStatusCode.Created, create.StatusCode);
+        Assert.True(create.StatusCode == HttpStatusCode.Created, await create.Content.ReadAsStringAsync());
         using var created = JsonDocument.Parse(await create.Content.ReadAsStringAsync());
         var recordId = created.RootElement.GetProperty("id").GetString();
         Assert.NotEqual(forgedId.ToString(), created.RootElement.GetProperty("idMedico").GetString());
@@ -187,9 +188,9 @@ public sealed class ApiSecurityAndPaginationTests(PetCoreApiFactory factory)
         var list = await client.GetAsync($"/api/Pet?tutorId={authenticatedTutorId}");
         Assert.Equal(HttpStatusCode.OK, list.StatusCode);
         using var listJson = JsonDocument.Parse(await list.Content.ReadAsStringAsync());
-        Assert.Equal(JsonValueKind.Array, listJson.RootElement.ValueKind);
-        Assert.Equal(1, listJson.RootElement.GetArrayLength());
-        Assert.Equal("Luna Mobile", listJson.RootElement[0].GetProperty("nome").GetString());
+        Assert.Equal(JsonValueKind.Array, listJson.RootElement.GetProperty("data").ValueKind);
+        Assert.Equal(1, listJson.RootElement.GetProperty("data").GetArrayLength());
+        Assert.Equal("Luna Mobile", listJson.RootElement.GetProperty("data")[0].GetProperty("nome").GetString());
         Assert.Contains(list.Headers.GetValues("Link"), value => value.Contains("rel=\"self\"", StringComparison.Ordinal));
     }
 
@@ -214,8 +215,8 @@ public sealed class ApiSecurityAndPaginationTests(PetCoreApiFactory factory)
         // Assert
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
-        Assert.Equal(email, json.RootElement.GetProperty("email").GetString());
-        Assert.Equal("tutor", json.RootElement.GetProperty("tipoPerfil").GetString());
+        Assert.Equal(email, json.RootElement.GetProperty("data").GetProperty("email").GetString());
+        Assert.Equal("tutor", json.RootElement.GetProperty("data").GetProperty("tipoPerfil").GetString());
     }
 
     private static string CreateToken(string key, DateTime expires)

@@ -1,6 +1,7 @@
 using System.Collections;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.WebUtilities;
 using PetCore.Application.DTOs;
 using PetCore.Authentication;
@@ -13,16 +14,22 @@ public sealed class PaginationHateoasFilter : IAsyncResultFilter
 
     public async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
     {
-        if (context.HttpContext.Request.Method == "GET" &&
-            context.Result is ObjectResult result && result.Value is not null && result.Value is not string)
+        if (context.Result is not ObjectResult result || result.Value is null || result.Value is string)
         {
-            var request = context.HttpContext.Request;
-            if (request.Path.Value?.EndsWith("/login", StringComparison.OrdinalIgnoreCase) == true)
-            {
-                await next();
-                return;
-            }
+            await next();
+            return;
+        }
 
+        var request = context.HttpContext.Request;
+        var statusCode = result.StatusCode ?? context.HttpContext.Response.StatusCode;
+        if (statusCode is >= 400 or < 200 || request.Path.Value?.EndsWith("/login", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            await next();
+            return;
+        }
+
+        if (request.Method == "GET")
+        {
             if (result.Value is IPagedData paged)
             {
                 var links = BuildCollectionLinks(request.Path, request.Query, paged.Page, paged.PageSize, paged.TotalPages);
@@ -60,7 +67,7 @@ public sealed class PaginationHateoasFilter : IAsyncResultFilter
                     ? new PagedResponse<object>(values.Skip((page - 1) * size).Take(size).ToList(), page, size, values.Count, pages, links)
                     : values;
             }
-            else if (result.Value.GetType().GetProperty("Id")?.GetValue(result.Value) is not null)
+            else if (result.Value is not IEnumerable && result.Value.GetType().GetProperty("Id")?.GetValue(result.Value) is not null)
             {
                 var links = new List<HateoasLink>
                 {
@@ -73,7 +80,38 @@ public sealed class PaginationHateoasFilter : IAsyncResultFilter
                 SetLinkHeader(context, links);
             }
         }
+
+        if (ShouldEnvelope(context))
+            result.Value = Wrap(result.Value);
+
         await next();
+    }
+
+    private static bool ShouldEnvelope(ResultExecutingContext context)
+    {
+        if (context.ActionDescriptor is not ControllerActionDescriptor action)
+            return false;
+
+        return action.ControllerName switch
+        {
+            "Pet" => true,
+            "Tutor" => !action.ActionName.Equals("Login", StringComparison.OrdinalIgnoreCase),
+            "Medico" => !action.ActionName.Equals("Login", StringComparison.OrdinalIgnoreCase)
+                && (!action.ActionName.Equals("FetchAll", StringComparison.OrdinalIgnoreCase)
+                    || PetCore.Authorization.ResourceAccess.IsVeterinarian(context.HttpContext.User)),
+            _ => false
+        };
+    }
+
+    private static object Wrap(object value)
+    {
+        if (value is PagedResponse<object> page)
+            return new PagedApiResponse<object>(page.Items, page.Page, page.PageSize, page.TotalCount, page.TotalPages, page.Links);
+
+        if (value is IEnumerable items)
+            return new ApiResponseEnvelope<IReadOnlyCollection<object>>(items.Cast<object>().ToList());
+
+        return new ApiResponseEnvelope<object>(value);
     }
 
     private static List<HateoasLink> BuildCollectionLinks(PathString path, IQueryCollection original, int page, int size, int pages)

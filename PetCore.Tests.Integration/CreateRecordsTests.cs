@@ -98,6 +98,13 @@ public sealed class CreateRecordsTests(PetCoreApiFactory factory)
             item.GetProperty("especializacao").GetString() == specialization);
         Assert.Single(catalogItem.EnumerateObject());
 
+        var pagedMedicosResponse = await client.GetAsync("/api/Medico?page=1&pageSize=1");
+        Assert.Equal(HttpStatusCode.OK, pagedMedicosResponse.StatusCode);
+        using var pagedMedicosJson = JsonDocument.Parse(await pagedMedicosResponse.Content.ReadAsStringAsync());
+        Assert.True(pagedMedicosJson.RootElement.TryGetProperty("items", out _));
+        Assert.True(pagedMedicosJson.RootElement.TryGetProperty("totalCount", out _));
+        Assert.False(pagedMedicosJson.RootElement.TryGetProperty("data", out _));
+
         Assert.Equal(HttpStatusCode.OK, examesResponse.StatusCode);
         using var examesJson = JsonDocument.Parse(await examesResponse.Content.ReadAsStringAsync());
         Assert.Equal(JsonValueKind.Array, examesJson.RootElement.ValueKind);

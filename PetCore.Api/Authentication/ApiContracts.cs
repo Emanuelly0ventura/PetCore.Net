@@ -17,15 +17,28 @@ public sealed record HateoasLink(string Href, string Rel, string Method = "GET")
 /// <param name="Items">Itens da página atual.</param>
 /// <param name="Page">Número da página atual.</param>
 /// <param name="PageSize">Quantidade máxima de itens por página.</param>
-/// <param name="TotalItems">Quantidade total de itens encontrados.</param>
+/// <param name="TotalCount">Quantidade total de itens encontrados.</param>
 /// <param name="TotalPages">Quantidade total de páginas.</param>
 /// <param name="Links">Links de navegação da coleção.</param>
-public sealed record PagedResponse<T>(IReadOnlyCollection<T> Items, int Page, int PageSize, int TotalItems, int TotalPages, IReadOnlyCollection<HateoasLink> Links);
+public sealed record PagedResponse<T>(IReadOnlyCollection<T> Items, int Page, int PageSize, int TotalCount, int TotalPages, IReadOnlyCollection<HateoasLink> Links);
 
 /// <summary>Resposta de um recurso acompanhada de links relacionados.</summary>
 /// <param name="Data">Recurso retornado.</param>
 /// <param name="Links">Links de navegação do recurso.</param>
 public sealed record ResourceResponse<T>(T Data, IReadOnlyCollection<HateoasLink> Links);
+
+/// <summary>Envelope padronizado para respostas de sucesso da API.</summary>
+/// <param name="Data">Recurso ou coleção retornada.</param>
+public sealed record ApiResponseEnvelope<T>(T Data);
+
+/// <summary>Envelope paginado que mantém os metadados e links de navegação.</summary>
+/// <param name="Items">Itens da página atual.</param>
+/// <param name="Page">Número da página.</param>
+/// <param name="PageSize">Quantidade máxima de itens.</param>
+/// <param name="TotalCount">Quantidade total encontrada.</param>
+/// <param name="TotalPages">Quantidade total de páginas.</param>
+/// <param name="Links">Links HATEOAS.</param>
+public sealed record PagedApiResponse<T>(IReadOnlyCollection<T> Items, int Page, int PageSize, int TotalCount, int TotalPages, IReadOnlyCollection<HateoasLink> Links);
 
 /// <summary>Dados de especialização expostos pela consulta pública do catálogo de médicos.</summary>
 /// <param name="Especializacao">Nome da especialização do médico.</param>
