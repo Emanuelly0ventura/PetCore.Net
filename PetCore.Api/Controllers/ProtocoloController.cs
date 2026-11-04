@@ -19,11 +19,19 @@ public class ProtocoloController(IProtocoloService protocoloService, IPetService
     {
         if (Request.Query.IsPaginationRequested())
         {
+            if (ResourceAccess.IsVeterinarian(User))
+            {
+                var veterinarianId = ResourceAccess.GetUserId(User);
+                if (!veterinarianId.HasValue) return Forbid();
+                return Ok(protocoloService.FetchPageForVeterinarian(
+                    pagination.ToPageQuery(Request.Query), veterinarianId.Value));
+            }
+
             var query = ResourceAccess.ScopeRecordPageQuery(User, pagination.ToPageQuery(Request.Query), "TutorId", "VeterinarioId");
             return Ok(protocoloService.FetchPage(query));
         }
 
-        return Ok(ResourceAccess.FilterRecords(User, protocoloService.FetchAll()));
+        return Ok(protocoloService.FetchAll().Where(CanReadProtocol).ToList());
     }
 
     [HttpGet("{id}")]
@@ -31,7 +39,7 @@ public class ProtocoloController(IProtocoloService protocoloService, IPetService
     {
         var item = protocoloService.FetchById(id);
         if (item is null) return NotFound();
-        return ResourceAccess.CanAccessRecord(User, item) ? Ok(item) : Forbid();
+        return CanReadProtocol(item) ? Ok(item) : Forbid();
     }
 
     [HttpPost]
@@ -79,4 +87,15 @@ public class ProtocoloController(IProtocoloService protocoloService, IPetService
         if (!ResourceAccess.CanAccessRecord(User, existing)) return Forbid();
         return protocoloService.Delete(id) ? NoContent() : NotFound();
     }
+
+    private bool CanReadProtocol(ProtocoloResponse protocol) =>
+        ResourceAccess.CanAccessRecord(User, protocol) ||
+        (ResourceAccess.IsVeterinarian(User) && IsUnassignedProtocolTemplate(protocol));
+
+    private static bool IsUnassignedProtocolTemplate(ProtocoloResponse protocol) =>
+        string.Equals(protocol.TipoRegistro, "protocolo", StringComparison.OrdinalIgnoreCase) &&
+        protocol.TutorId is null &&
+        protocol.PetId is null &&
+        protocol.VeterinarioId is null &&
+        protocol.DataEnvio is null;
 }

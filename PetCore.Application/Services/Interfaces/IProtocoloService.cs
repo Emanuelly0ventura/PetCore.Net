@@ -6,6 +6,7 @@ public interface IProtocoloService
 {
     IReadOnlyCollection<ProtocoloResponse> FetchAll();
     PagedData<ProtocoloResponse> FetchPage(PageQuery query);
+    PagedData<ProtocoloResponse> FetchPageForVeterinarian(PageQuery query, Guid veterinarianId);
     ProtocoloResponse? FetchById(string id);
     ProtocoloResponse Create(ProtocoloRequest request);
     ProtocoloResponse? Patch(string id, ProtocoloDadosRequest request);
